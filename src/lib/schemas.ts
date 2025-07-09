@@ -20,4 +20,6 @@ export const formSchema = z.object({
   protein: z.coerce.number().min(1, "Protein must be a positive number"),
   carbs: z.coerce.number().min(1, "Carbs must be a positive number"),
   fats: z.coerce.number().min(1, "Fats must be a positive number"),
+  injuries: z.string().min(1, "Please mention any injuries, or type 'none'."),
+  previousPlan: z.string().min(1, "Please describe your previous plan, or type 'none'."),
 });

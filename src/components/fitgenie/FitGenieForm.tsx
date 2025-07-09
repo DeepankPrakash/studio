@@ -40,6 +40,11 @@ const steps = [
     fields: ["age", "weight", "height", "gender"],
   },
   {
+    title: "Health History",
+    description: "Tell us about your health background.",
+    fields: ["injuries", "previousPlan"],
+  },
+  {
     title: "Fitness Goals",
     description: "What are you aiming for?",
     fields: ["goal", "activityLevel", "experienceLevel"],
@@ -72,6 +77,8 @@ export default function FitGenieForm({ onSubmit, loading }: FitGenieFormProps) {
       protein: 150,
       carbs: 200,
       fats: 60,
+      injuries: "None",
+      previousPlan: "None",
     },
   });
 
@@ -128,6 +135,27 @@ export default function FitGenieForm({ onSubmit, loading }: FitGenieFormProps) {
 
             <div className={currentStep === 1 ? "block" : "hidden"}>
               <div className="space-y-4">
+                <FormField control={form.control} name="injuries" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Injuries</FormLabel>
+                    <FormControl><Textarea {...field} /></FormControl>
+                    <FormDescription>List any current or past injuries that might affect your training. If none, type 'None'.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}/>
+                <FormField control={form.control} name="previousPlan" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Previous Plan</FormLabel>
+                    <FormControl><Textarea {...field} /></FormControl>
+                    <FormDescription>Describe any workout or diet plan you were following before. If none, type 'None'.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}/>
+              </div>
+            </div>
+
+            <div className={currentStep === 2 ? "block" : "hidden"}>
+              <div className="space-y-4">
                 <FormField control={form.control} name="goal" render={({ field }) => (
                   <FormItem><FormLabel>Primary Goal</FormLabel><FormControl>
                     <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
@@ -160,7 +188,7 @@ export default function FitGenieForm({ onSubmit, loading }: FitGenieFormProps) {
               </div>
             </div>
 
-            <div className={currentStep === 2 ? "block" : "hidden"}>
+            <div className={currentStep === 3 ? "block" : "hidden"}>
               <div className="space-y-4">
                 <FormField control={form.control} name="workoutDays" render={({ field }) => (
                   <FormItem><FormLabel>Workout Days per Week</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
@@ -174,7 +202,7 @@ export default function FitGenieForm({ onSubmit, loading }: FitGenieFormProps) {
               </div>
             </div>
             
-            <div className={currentStep === 3 ? "block" : "hidden"}>
+            <div className={currentStep === 4 ? "block" : "hidden"}>
               <div className="space-y-4">
                  <FormField control={form.control} name="foodPreferences" render={({ field }) => (
                   <FormItem><FormLabel>Food Preferences & Dislikes (Indian Style)</FormLabel><FormControl><Textarea {...field} /></FormControl><FormDescription>List your favorite and least favorite foods. Be specific!</FormDescription><FormMessage /></FormItem>

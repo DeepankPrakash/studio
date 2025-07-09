@@ -30,6 +30,8 @@ export async function generatePlansAction(data: z.infer<typeof formSchema>) {
       experienceLevel: validatedData.experienceLevel,
       workoutDays: validatedData.workoutDays,
       workoutTime: validatedData.workoutTime,
+      injuries: validatedData.injuries,
+      previousPlan: validatedData.previousPlan,
     };
 
     const [dietPlan, workoutPlan] = await Promise.all([

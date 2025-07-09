@@ -28,6 +28,8 @@ const GenerateWorkoutPlanInputSchema = z.object({
     .describe('The experience level of the user.'),
   workoutDays: z.number().describe('The number of days per week the user can workout.'),
   workoutTime: z.number().describe('The amount of time the user can workout in minutes.'),
+  injuries: z.string().describe('Any injuries the user has. If none, this will be "None".'),
+  previousPlan: z.string().describe('Any previous plan the user was following. If none, this will be "None".'),
 });
 export type GenerateWorkoutPlanInput = z.infer<typeof GenerateWorkoutPlanInputSchema>;
 
@@ -58,9 +60,11 @@ Available Equipment: {{{equipment}}}
 Experience Level: {{{experienceLevel}}}
 Workout Days Per Week: {{{workoutDays}}}
 Workout Time: {{{workoutTime}}} minutes
+Injuries: {{{injuries}}}
+Previous Plan: {{{previousPlan}}}
 
 
-Make sure that the plan is tailored to the user's goal, experience level, and available equipment.
+Make sure that the plan is tailored to the user's goal, experience level, available equipment, and any mentioned injuries. If the user has injuries, suggest alternative exercises or modifications. If they were on a previous plan, consider it for progression.
 
 Limit your response to a single workout plan, do not list multiple options. Break down the workout plan by days.
 
