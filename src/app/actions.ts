@@ -8,8 +8,42 @@ import { formSchema } from "@/lib/schemas";
 export async function generatePlansAction(data: z.infer<typeof formSchema>) {
   try {
     const validatedData = formSchema.parse(data);
+    const { age, weight, height, gender, activityLevel, goal } = validatedData;
 
-    const macroTargets = `Protein: ${validatedData.protein}g, Carbs: ${validatedData.carbs}g, Fats: ${validatedData.fats}g`;
+    // BMR Calculation (Mifflin-St Jeor)
+    let bmr: number;
+    if (gender === "male") {
+      bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+    } else { // female or other
+      bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+    }
+
+    // TDEE Calculation
+    const activityFactors = {
+      sedentary: 1.2,
+      "lightly active": 1.375,
+      "moderately active": 1.55,
+      "very active": 1.725,
+      "extra active": 1.9,
+    };
+    const tdee = bmr * activityFactors[activityLevel];
+
+    // Calorie Target based on Goal
+    let targetCalories = tdee;
+    if (goal === "cut") {
+      targetCalories -= 500;
+    } else if (goal === "bulk") {
+      targetCalories += 300;
+    }
+
+    // Macro Calculation
+    const protein = Math.round(weight * 2);
+    const fats = Math.round((targetCalories * 0.25) / 9);
+    const carbs = Math.round(
+      (targetCalories - protein * 4 - fats * 9) / 4
+    );
+
+    const macroTargets = `Protein: ${protein}g, Carbs: ${carbs}g, Fats: ${fats}g. (Total calories: ~${Math.round(targetCalories)})`;
 
     const dietPlanInput = {
       age: validatedData.age,
@@ -39,7 +73,7 @@ export async function generatePlansAction(data: z.infer<typeof formSchema>) {
       generateWorkoutPlan(workoutPlanInput),
     ]);
 
-    return { dietPlan, workoutPlan };
+    return { dietPlan, workoutPlan, proteinGoal: protein };
   } catch (error) {
     if (error instanceof z.ZodError) {
       return { error: "Validation failed: " + error.message };

@@ -57,7 +57,7 @@ const steps = [
   {
     title: "Diet Preferences",
     description: "Tell us about your eating habits.",
-    fields: ["foodPreferences", "protein", "carbs", "fats"],
+    fields: ["foodPreferences"],
   },
 ];
 
@@ -70,13 +70,14 @@ export default function FitGenieForm({ onSubmit, loading }: FitGenieFormProps) {
       age: 25,
       weight: 70,
       height: 175,
+      gender: "male",
+      goal: "cut",
+      activityLevel: "moderately active",
+      experienceLevel: "intermediate",
       workoutDays: 4,
       workoutTime: 60,
       equipment: "Basic gym equipment (dumbbells, barbells, bench)",
       foodPreferences: "I like chicken, rice, lentils, and spinach. I dislike beetroot.",
-      protein: 150,
-      carbs: 200,
-      fats: 60,
       injuries: "None",
       previousPlan: "None",
     },
@@ -207,18 +208,6 @@ export default function FitGenieForm({ onSubmit, loading }: FitGenieFormProps) {
                  <FormField control={form.control} name="foodPreferences" render={({ field }) => (
                   <FormItem><FormLabel>Food Preferences & Dislikes (Indian Style)</FormLabel><FormControl><Textarea {...field} /></FormControl><FormDescription>List your favorite and least favorite foods. Be specific!</FormDescription><FormMessage /></FormItem>
                 )}/>
-                <FormLabel>Daily Macro Targets</FormLabel>
-                <div className="grid grid-cols-3 gap-4">
-                   <FormField control={form.control} name="protein" render={({ field }) => (
-                    <FormItem><FormLabel>Protein (g)</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
-                  )}/>
-                   <FormField control={form.control} name="carbs" render={({ field }) => (
-                    <FormItem><FormLabel>Carbs (g)</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
-                  )}/>
-                   <FormField control={form.control} name="fats" render={({ field }) => (
-                    <FormItem><FormLabel>Fats (g)</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
-                  )}/>
-                </div>
               </div>
             </div>
 

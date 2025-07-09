@@ -12,25 +12,25 @@ import { generatePlansAction } from "./actions";
 type Plans = {
   workoutPlan: string;
   dietPlan: string;
+  proteinGoal: number;
 };
 
 export default function Home() {
   const { toast } = useToast();
   const [plans, setPlans] = useState<Plans | null>(null);
-  const [formValues, setFormValues] = useState<z.infer<typeof formSchema> | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleFormSubmit = async (data: z.infer<typeof formSchema>) => {
     setLoading(true);
-    setFormValues(data);
     try {
       const result = await generatePlansAction(data);
-      if (result.error) {
-        throw new Error(result.error);
+      if (result.error || !result.proteinGoal) {
+        throw new Error(result.error || "Failed to generate plans and calculate macros.");
       }
       setPlans({
         workoutPlan: result.workoutPlan?.workoutPlan ?? "Could not generate a workout plan.",
         dietPlan: result.dietPlan?.dietPlan ?? "Could not generate a diet plan.",
+        proteinGoal: result.proteinGoal,
       });
     } catch (error) {
       console.error(error);
@@ -47,7 +47,6 @@ export default function Home() {
 
   const handleStartOver = () => {
     setPlans(null);
-    setFormValues(null);
   };
 
   return (
@@ -65,11 +64,11 @@ export default function Home() {
       </header>
 
       <div className="max-w-4xl mx-auto">
-        {plans && formValues ? (
+        {plans ? (
           <PlanDisplay
             workoutPlan={plans.workoutPlan}
             dietPlan={plans.dietPlan}
-            proteinGoal={formValues.protein}
+            proteinGoal={plans.proteinGoal}
             onStartOver={handleStartOver}
           />
         ) : (
