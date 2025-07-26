@@ -41,17 +41,27 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await signIn(data.email, data.password);
-      toast({ title: 'Login successful!' });
+      // Let the useAuth hook handle redirection
       router.push('/app/generate');
-      router.refresh(); // Force a refresh to ensure layout re-renders with user state
     } catch (error: any) {
-      let errorMessage = 'Please check your credentials and try again.';
-      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-        errorMessage = 'Invalid email or password. Please try again.';
-      } else if (error.code) {
-        errorMessage = `An error occurred: ${error.code}`;
+      console.error('Login failed:', error);
+      let errorMessage = 'An unexpected error occurred. Please try again.';
+      // Firebase errors have a 'code' property.
+      switch (error.code) {
+        case 'auth/user-not-found':
+        case 'auth/wrong-password':
+        case 'auth/invalid-credential':
+          errorMessage = 'Invalid email or password. Please check your credentials.';
+          break;
+        case 'auth/too-many-requests':
+          errorMessage = 'Too many login attempts. Please try again later.';
+          break;
+        case 'auth/network-request-failed':
+            errorMessage = 'Network error. Please check your internet connection.';
+            break;
+        default:
+          errorMessage = `Login failed: ${error.message}`;
       }
-
       toast({
         variant: 'destructive',
         title: 'Login Failed',

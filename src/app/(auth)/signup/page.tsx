@@ -51,11 +51,29 @@ export default function SignupPage() {
       await signUp(data.email, data.password);
       toast({ title: 'Account created successfully!', description: 'Please login to continue.'});
       router.push('/login');
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Signup failed:', error);
+       let errorMessage = 'An unexpected error occurred. Please try again.';
+      switch (error.code) {
+        case 'auth/email-already-in-use':
+          errorMessage = 'This email is already in use. Please try another one.';
+          break;
+        case 'auth/weak-password':
+          errorMessage = 'The password is too weak. Please choose a stronger password.';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'The email address is not valid.';
+          break;
+        case 'auth/network-request-failed':
+            errorMessage = 'Network error. Please check your internet connection.';
+            break;
+        default:
+          errorMessage = `Sign up failed: ${error.message}`;
+      }
       toast({
         variant: 'destructive',
         title: 'Sign up failed',
-        description: error instanceof Error ? error.message : 'An error occurred. Please try again.',
+        description: errorMessage,
       });
     } finally {
       setLoading(false);
@@ -68,7 +86,7 @@ export default function SignupPage() {
         <header className="text-center mb-8">
           <div className="flex items-center justify-center gap-4 mb-2">
           <Dumbbell className="w-10 h-10 text-primary" />
-          <h1 className="text-4xl md:text-5xl font-bold font-headline text-gray-800">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground">
               FITMATE
           </h1>
           </div>
@@ -149,7 +167,7 @@ export default function SignupPage() {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full !mt-6" disabled={loading}>
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Create Account
                 </Button>
@@ -157,7 +175,7 @@ export default function SignupPage() {
             </Form>
             <div className="mt-4 text-center text-sm">
               Already have an account?{' '}
-              <Link href="/login" className="underline">
+              <Link href="/login" className="font-semibold text-primary underline-offset-4 hover:underline">
                 Login
               </Link>
             </div>
