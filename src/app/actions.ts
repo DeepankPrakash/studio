@@ -5,6 +5,7 @@ import { generateDietPlan } from "@/ai/flows/generate-diet-plan";
 import { generateWorkoutPlan } from "@/ai/flows/generate-workout-plan";
 import { generateSupplementPlan } from "@/ai/flows/generate-supplement-plan";
 import { formSchema } from "@/lib/schemas";
+import { talkToAi } from "@/ai/flows/talk-to-ai";
 
 export async function generatePlansAction(data: z.infer<typeof formSchema>) {
   try {
@@ -91,4 +92,15 @@ export async function generatePlansAction(data: z.infer<typeof formSchema>) {
     console.error("Error generating plans:", error);
     return { error: "An unexpected error occurred while generating plans." };
   }
+}
+
+
+export async function talkToAiAction(history: { role: 'user' | 'model'; text: string }[], newMessage: string) {
+    try {
+        const result = await talkToAi({history, newMessage});
+        return result.response;
+    } catch (error) {
+        console.error("Error in talkToAiAction: ", error);
+        return { error: "An unexpected error occurred while talking to the AI." };
+    }
 }

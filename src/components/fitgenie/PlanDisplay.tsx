@@ -25,7 +25,36 @@ export default function PlanDisplay({
 
   return (
     <div className="space-y-6">
-       <Card className="border-2 border-green-200 shadow-lg">
+       <div className="hidden">
+         <div id="printable-plan" className="printable-area pt-4 space-y-4">
+            <Card>
+                <CardHeader>
+                <CardTitle>Workout Plan</CardTitle>
+                </CardHeader>
+                <CardContent className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-gray-50 p-4 rounded-md">
+                {workoutPlan}
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader>
+                <CardTitle>Indian-Style Diet Plan</CardTitle>
+                </CardHeader>
+                <CardContent className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-gray-50 p-4 rounded-md">
+                {dietPlan}
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader>
+                <CardTitle>Supplement Recommendations</CardTitle>
+                </CardHeader>
+                <CardContent className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-gray-50 p-4 rounded-md">
+                {supplementPlan}
+                </CardContent>
+            </Card>
+         </div>
+       </div>
+
+       <Card className="border-2 border-green-200 shadow-lg no-print">
         <CardHeader>
           <CardTitle>Your Personalized Plan</CardTitle>
           <CardDescription>
@@ -39,7 +68,7 @@ export default function PlanDisplay({
               <TabsTrigger value="diet"><Apple className="mr-2" />Diet</TabsTrigger>
               <TabsTrigger value="supplements"><Sparkles className="mr-2" />Supplements</TabsTrigger>
             </TabsList>
-            <div id="printable-plan" className="printable-area pt-4">
+            <div className="pt-4">
               <TabsContent value="workout">
                 <Card>
                   <CardHeader>
