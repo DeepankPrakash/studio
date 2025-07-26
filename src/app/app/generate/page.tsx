@@ -4,8 +4,8 @@ import { useState } from "react";
 import type { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import type { formSchema } from "@/lib/schemas";
-import FitGenieForm from "@/components/fitgenie/FitGenieForm";
-import PlanDisplay from "@/components/fitgenie/PlanDisplay";
+import FitmateForm from "@/components/fitmate/FitmateForm";
+import PlanDisplay from "@/components/fitmate/PlanDisplay";
 import { generatePlansAction } from "@/app/actions";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -68,7 +68,7 @@ export default function GeneratePage() {
           onStartOver={handleStartOver}
         />
       ) : (
-        <FitGenieForm onSubmit={handleFormSubmit} loading={loading} />
+        <FitmateForm onSubmit={handleFormSubmit} loading={loading} />
       )}
     </div>
   );

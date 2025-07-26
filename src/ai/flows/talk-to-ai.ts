@@ -1,7 +1,7 @@
 'use server';
 
 /**
- * @fileOverview A conversational AI agent for FitGenie.
+ * @fileOverview A conversational AI agent for FITMATE.
  *
  * - talkToAi - A function that handles the conversation with the user.
  * - TalkToAiInput - The input type for the talkToAi function.
@@ -35,7 +35,7 @@ const prompt = ai.definePrompt({
   name: 'talkToAiPrompt',
   input: {schema: TalkToAiInputSchema},
   output: {schema: TalkToAiOutputSchema},
-  prompt: `You are FitGenie, a friendly and knowledgeable AI fitness assistant. Your role is to answer user questions about fitness, nutrition, and their personalized plans. Be supportive and encouraging.
+  prompt: `You are FITMATE, a friendly and knowledgeable AI fitness assistant. Your role is to answer user questions about fitness, nutrition, and their personalized plans. Be supportive and encouraging.
 
 Keep your answers concise and easy to understand.
 

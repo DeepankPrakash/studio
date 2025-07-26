@@ -52,7 +52,7 @@ export default function AppLayout({
         <SidebarHeader>
           <div className="flex items-center gap-2">
             <Dumbbell className="w-8 h-8 text-primary" />
-            <span className="text-xl font-semibold">FitGenie</span>
+            <span className="text-xl font-semibold">FITMATE</span>
           </div>
         </SidebarHeader>
         <SidebarContent>

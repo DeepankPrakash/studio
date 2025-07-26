@@ -69,7 +69,7 @@ export default function ChatPage() {
         <div className="h-[calc(100vh-4rem)] flex flex-col max-w-2xl mx-auto">
             <Card className="flex-1 flex flex-col">
                 <CardHeader>
-                    <CardTitle>Chat with FitGenie</CardTitle>
+                    <CardTitle>Chat with FITMATE</CardTitle>
                     <CardDescription>Ask me anything about your fitness plan, nutrition, or general health.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col gap-4">
