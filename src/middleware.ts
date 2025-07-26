@@ -4,10 +4,8 @@ import type { NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   
-  // If the user is at the root, redirect them to the login page.
-  if (pathname === '/') {
-    return NextResponse.redirect(new URL('/login', request.url))
-  }
+  // This middleware is now primarily for protecting the /app/* routes.
+  // The root redirect is handled on the root page itself.
  
   return NextResponse.next()
 }
@@ -23,6 +21,6 @@ export const config = {
      * - login (login page)
      * - signup (signup page)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|login|signup).*)',
+    '/app/:path*',
   ],
 }
