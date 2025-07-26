@@ -14,6 +14,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
+// Explicitly import to ensure Firebase is initialized
+import { app } from '@/lib/firebase';
 
 const signupSchema = z
   .object({
@@ -52,7 +54,7 @@ export default function SignupPage() {
       toast({ title: 'Account created successfully!', description: 'Please login to continue.'});
       router.push('/login');
     } catch (error: any) {
-      console.error('Signup failed:', error);
+      console.error('Signup failed:', error.code, error.message);
        let errorMessage = 'An unexpected error occurred. Please try again.';
       switch (error.code) {
         case 'auth/email-already-in-use':
@@ -66,6 +68,9 @@ export default function SignupPage() {
           break;
         case 'auth/network-request-failed':
             errorMessage = 'Network error. Please check your internet connection.';
+            break;
+        case 'auth/configuration-not-found':
+            errorMessage = 'Firebase configuration is missing. Please contact support.';
             break;
         default:
           errorMessage = `Sign up failed: ${error.message}`;

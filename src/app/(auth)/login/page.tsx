@@ -14,6 +14,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
+// Explicitly import to ensure Firebase is initialized
+import { app } from '@/lib/firebase';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }),
@@ -44,7 +46,7 @@ export default function LoginPage() {
       // Let the useAuth hook handle redirection
       router.push('/app/generate');
     } catch (error: any) {
-      console.error('Login failed:', error);
+      console.error('Login failed:', error.code, error.message);
       let errorMessage = 'An unexpected error occurred. Please try again.';
       // Firebase errors have a 'code' property.
       switch (error.code) {
@@ -58,6 +60,9 @@ export default function LoginPage() {
           break;
         case 'auth/network-request-failed':
             errorMessage = 'Network error. Please check your internet connection.';
+            break;
+        case 'auth/configuration-not-found':
+            errorMessage = 'Firebase configuration is missing. Please contact support.';
             break;
         default:
           errorMessage = `Login failed: ${error.message}`;
