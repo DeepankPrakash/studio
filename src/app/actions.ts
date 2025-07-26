@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { generateDietPlan } from "@/ai/flows/generate-diet-plan";
 import { generateWorkoutPlan } from "@/ai/flows/generate-workout-plan";
+import { generateSupplementPlan } from "@/ai/flows/generate-supplement-plan";
 import { formSchema } from "@/lib/schemas";
 
 export async function generatePlansAction(data: z.infer<typeof formSchema>) {
@@ -68,12 +69,21 @@ export async function generatePlansAction(data: z.infer<typeof formSchema>) {
       previousPlan: validatedData.previousPlan,
     };
 
-    const [dietPlan, workoutPlan] = await Promise.all([
+    const supplementPlanInput = {
+        goal: validatedData.goal,
+        foodPreferences: validatedData.foodPreferences,
+        injuries: validatedData.injuries,
+        gender: validatedData.gender,
+        age: validatedData.age,
+    };
+
+    const [dietPlan, workoutPlan, supplementPlan] = await Promise.all([
       generateDietPlan(dietPlanInput),
       generateWorkoutPlan(workoutPlanInput),
+      generateSupplementPlan(supplementPlanInput),
     ]);
 
-    return { dietPlan, workoutPlan, proteinGoal: protein };
+    return { dietPlan, workoutPlan, supplementPlan };
   } catch (error) {
     if (error instanceof z.ZodError) {
       return { error: "Validation failed: " + error.message };

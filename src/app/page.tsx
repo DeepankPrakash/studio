@@ -12,7 +12,7 @@ import { generatePlansAction } from "./actions";
 type Plans = {
   workoutPlan: string;
   dietPlan: string;
-  proteinGoal: number;
+  supplementPlan: string;
 };
 
 export default function Home() {
@@ -24,13 +24,13 @@ export default function Home() {
     setLoading(true);
     try {
       const result = await generatePlansAction(data);
-      if (result.error || !result.proteinGoal) {
-        throw new Error(result.error || "Failed to generate plans and calculate macros.");
+      if (result.error || !result.dietPlan || !result.workoutPlan || !result.supplementPlan) {
+        throw new Error(result.error || "Failed to generate plans.");
       }
       setPlans({
-        workoutPlan: result.workoutPlan?.workoutPlan ?? "Could not generate a workout plan.",
-        dietPlan: result.dietPlan?.dietPlan ?? "Could not generate a diet plan.",
-        proteinGoal: result.proteinGoal,
+        workoutPlan: result.workoutPlan.workoutPlan,
+        dietPlan: result.dietPlan.dietPlan,
+        supplementPlan: result.supplementPlan.supplementPlan,
       });
     } catch (error) {
       console.error(error);
@@ -68,7 +68,7 @@ export default function Home() {
           <PlanDisplay
             workoutPlan={plans.workoutPlan}
             dietPlan={plans.dietPlan}
-            proteinGoal={plans.proteinGoal}
+            supplementPlan={plans.supplementPlan}
             onStartOver={handleStartOver}
           />
         ) : (
