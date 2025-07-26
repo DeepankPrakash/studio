@@ -41,13 +41,21 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await signIn(data.email, data.password);
-      toast({ title: "Login successful!"});
+      toast({ title: 'Login successful!' });
       router.push('/app/generate');
-    } catch (error) {
+      router.refresh(); // Force a refresh to ensure layout re-renders with user state
+    } catch (error: any) {
+      let errorMessage = 'Please check your credentials and try again.';
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        errorMessage = 'Invalid email or password. Please try again.';
+      } else if (error.code) {
+        errorMessage = `An error occurred: ${error.code}`;
+      }
+
       toast({
         variant: 'destructive',
-        title: 'Login failed',
-        description: error instanceof Error ? error.message : 'Please check your credentials and try again.',
+        title: 'Login Failed',
+        description: errorMessage,
       });
     } finally {
       setLoading(false);
@@ -55,22 +63,22 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12">
       <div className="w-full max-w-md">
         <header className="text-center mb-8">
-            <div className="flex items-center justify-center gap-4 mb-2">
-            <Dumbbell className="w-10 h-10 text-primary" />
-            <h1 className="text-4xl md:text-5xl font-bold font-headline text-gray-800">
-                FITMATE
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <Dumbbell className="w-12 h-12 text-primary" />
+            <h1 className="text-5xl font-bold tracking-tighter">
+              FITMATE
             </h1>
-            </div>
-            <p className="text-lg text-muted-foreground">
-            Welcome back! Please login to your account.
-            </p>
+          </div>
+          <p className="text-xl text-muted-foreground">
+            Welcome back! Let's get you signed in.
+          </p>
         </header>
-        <Card>
+        <Card className="shadow-2xl">
           <CardHeader>
-            <CardTitle>Login</CardTitle>
+            <CardTitle className="text-2xl">Login</CardTitle>
             <CardDescription>Enter your email and password to access your account.</CardDescription>
           </CardHeader>
           <CardContent>
@@ -105,7 +113,8 @@ export default function LoginPage() {
                           <button
                             type="button"
                             onClick={() => setShowPassword((prev) => !prev)}
-                            className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground"
+                            className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground"
+                            aria-label={showPassword ? 'Hide password' : 'Show password'}
                           >
                             {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                           </button>
@@ -115,15 +124,15 @@ export default function LoginPage() {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full !mt-6" disabled={loading}>
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Login
                 </Button>
               </form>
             </Form>
-            <div className="mt-4 text-center text-sm">
+            <div className="mt-6 text-center text-sm">
               Don't have an account?{' '}
-              <Link href="/signup" className="underline">
+              <Link href="/signup" className="font-semibold text-primary underline-offset-4 hover:underline">
                 Sign up
               </Link>
             </div>
