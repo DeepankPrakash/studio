@@ -2,6 +2,11 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
  
 export function middleware(request: NextRequest) {
+  // If the user is on the root path, redirect them to the /app/generate page.
+  if (request.nextUrl.pathname === '/') {
+    return NextResponse.redirect(new URL('/app/generate', request.url))
+  }
+ 
   return NextResponse.next()
 }
  
