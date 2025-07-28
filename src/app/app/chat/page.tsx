@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -70,14 +71,6 @@ export default function ChatPage() {
         <div className="h-[calc(100vh-4rem)] flex flex-col max-w-4xl mx-auto w-full">
             <Card className="flex-1 flex flex-col">
                 <CardHeader className="text-center">
-                    <Image 
-                        src="https://placehold.co/800x200.png" 
-                        alt="Chat with AI"
-                        data-ai-hint="gym chat"
-                        width={800}
-                        height={200}
-                        className="w-full h-32 object-cover rounded-lg mb-4"
-                    />
                     <CardTitle>Chat with FITMATE</CardTitle>
                     <CardDescription>Ask me anything about your fitness plan, nutrition, or general health.</CardDescription>
                 </CardHeader>
