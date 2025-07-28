@@ -1,10 +1,10 @@
+
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Download, RefreshCw, Sparkles, Apple, Dumbbell } from 'lucide-react';
-import Image from "next/image";
 
 type PlanDisplayProps = {
   workoutPlan: string;
@@ -56,14 +56,6 @@ export default function PlanDisplay({
        </div>
 
        <Card className="border-2 border-green-200 shadow-lg no-print">
-         <Image 
-          src="https://placehold.co/1200x300.png"
-          alt="Fitness Plan"
-          data-ai-hint="workout plan"
-          width={1200}
-          height={300}
-          className="w-full h-48 object-cover rounded-t-lg"
-        />
         <CardHeader className="text-center">
           <CardTitle>Your Personalized Plan</CardTitle>
           <CardDescription>
