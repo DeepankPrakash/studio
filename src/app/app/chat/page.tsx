@@ -8,6 +8,7 @@ import { Send, Loader2, User, Sparkles } from 'lucide-react';
 import { talkToAiAction } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import Image from 'next/image';
 
 type Message = {
     role: 'user' | 'model';
@@ -66,15 +67,28 @@ export default function ChatPage() {
 
 
     return (
-        <div className="h-[calc(100vh-4rem)] flex flex-col max-w-2xl mx-auto">
+        <div className="h-[calc(100vh-4rem)] flex flex-col max-w-4xl mx-auto w-full">
             <Card className="flex-1 flex flex-col">
-                <CardHeader>
+                <CardHeader className="text-center">
+                    <Image 
+                        src="https://placehold.co/800x200.png" 
+                        alt="Chat with AI"
+                        data-ai-hint="gym chat"
+                        width={800}
+                        height={200}
+                        className="w-full h-32 object-cover rounded-lg mb-4"
+                    />
                     <CardTitle>Chat with FITMATE</CardTitle>
                     <CardDescription>Ask me anything about your fitness plan, nutrition, or general health.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col gap-4">
                     <ScrollArea className="flex-1 pr-4" ref={scrollAreaRef}>
                         <div className="space-y-4">
+                            {messages.length === 0 && (
+                                <div className="text-center text-muted-foreground">
+                                    <p>Start the conversation!</p>
+                                </div>
+                            )}
                             {messages.map((message, index) => (
                                 <div key={index} className={`flex items-start gap-3 ${message.role === 'user' ? 'justify-end' : ''}`}>
                                     {message.role === 'model' && (

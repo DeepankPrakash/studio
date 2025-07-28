@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { Dumbbell, Home, LogOut, MessageSquare, User, Menu } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { Dumbbell, Home, MessageSquare, Menu } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -11,40 +11,14 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { useAuth } from '@/hooks/use-auth';
 
 export default function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user, loading, signOut } = useAuth();
-  const router = useRouter();
   const pathname = usePathname();
 
-  React.useEffect(() => {
-    if (!loading && !user) {
-      router.replace('/login');
-    }
-  }, [user, loading, router]);
-
-  if (loading || !user) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <Dumbbell className="h-12 w-12 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      router.push('/login');
-    } catch (error) {
-        console.error("Failed to sign out:", error);
-    }
-  };
-  
   const navItems = (
     <>
       <Link
@@ -85,16 +59,6 @@ export default function AppLayout({
           <nav className="flex-1 grid items-start px-2 text-sm font-medium lg:px-4">
              {navItems}
           </nav>
-          <div className="mt-auto p-4">
-            <div className="flex items-center gap-2 p-2 rounded-md bg-muted mb-2">
-                <User className="w-5 h-5"/>
-                <span className="text-sm truncate">{user.email}</span>
-            </div>
-           <Button variant="ghost" className="w-full justify-start" onClick={handleSignOut}>
-             <LogOut className="mr-2 h-4 w-4"/>
-             Sign Out
-           </Button>
-          </div>
         </div>
       </div>
       <div className="flex flex-col">
@@ -117,16 +81,6 @@ export default function AppLayout({
                 </Link>
                 {navItems}
               </nav>
-               <div className="mt-auto">
-                 <div className="flex items-center gap-2 p-2 rounded-md bg-muted mb-2">
-                    <User className="w-5 h-5"/>
-                    <span className="text-sm truncate">{user.email}</span>
-                </div>
-               <Button variant="ghost" className="w-full justify-start" onClick={handleSignOut}>
-                 <LogOut className="mr-2 h-4 w-4"/>
-                 Sign Out
-               </Button>
-              </div>
             </SheetContent>
           </Sheet>
            <div className="w-full flex-1">

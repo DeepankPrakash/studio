@@ -8,6 +8,7 @@ import FitmateForm from "@/components/fitmate/FitmateForm";
 import PlanDisplay from "@/components/fitmate/PlanDisplay";
 import { generatePlansAction } from "@/app/actions";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import Image from "next/image";
 
 type Plans = {
   workoutPlan: string;
@@ -53,7 +54,15 @@ export default function GeneratePage() {
   return (
     <div className="max-w-4xl mx-auto">
       <Card className="mb-8 bg-transparent border-0 shadow-none">
-        <CardHeader>
+         <Image 
+          src="https://placehold.co/1200x300.png"
+          alt="Fitness Motivation"
+          data-ai-hint="fitness motivation"
+          width={1200}
+          height={300}
+          className="w-full h-48 object-cover rounded-lg mb-4"
+        />
+        <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold">Plan Generator</CardTitle>
           <CardDescription className="text-lg">
             Fill out the form below to get your personalized fitness and diet plans.
