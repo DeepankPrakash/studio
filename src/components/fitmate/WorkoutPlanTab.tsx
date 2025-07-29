@@ -51,12 +51,12 @@ export default function WorkoutPlanTab({ workoutPlan }: WorkoutPlanTabProps) {
             <AccordionItem value={`item-${index}`} key={index}>
               <AccordionTrigger className="text-lg font-semibold">{workout.day}</AccordionTrigger>
               <AccordionContent>
-                <div className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-muted p-4 rounded-md mb-4">
+                <div className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-muted/50 p-4 rounded-md mb-4">
                   {workout.details}
                 </div>
                 <Link href={`/app/workout/${index + 1}`} passHref>
                   <Button>
-                    <PlayCircle className="mr-2" /> Start Workout
+                    <PlayCircle className="mr-2 h-4 w-4" /> Start Workout
                   </Button>
                 </Link>
               </AccordionContent>

@@ -24,6 +24,7 @@ const parseSupplements = (plan: string): Supplement[] => {
     }
   });
 
+  // Fallback for different formats
   if (supplements.length === 0) {
      const items = plan.split('\n\n').filter(p => p.trim());
      return items.map(item => {
@@ -36,6 +37,7 @@ const parseSupplements = (plan: string): Supplement[] => {
 
   return supplements;
 };
+
 
 type SupplementPlanTabProps = {
   supplementPlan: string;
@@ -56,7 +58,7 @@ export default function SupplementPlanTab({ supplementPlan }: SupplementPlanTabP
             <Card key={index} className="bg-muted/50">
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-accent" />
+                  <Sparkles className="w-5 h-5 text-yellow-500" />
                   {supplement.name}
                 </Title>
               </CardHeader>
@@ -66,10 +68,7 @@ export default function SupplementPlanTab({ supplementPlan }: SupplementPlanTabP
             </Card>
           ))
         ) : (
-          <p className="text-sm text-muted-foreground">The supplement plan couldn't be displayed in a structured format. Here is the raw text:</p>
-        )}
-        {parsedSupplements.length === 0 && (
-          <div className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-muted p-4 rounded-md">
+           <div className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-muted p-4 rounded-md">
             {supplementPlan}
           </div>
         )}

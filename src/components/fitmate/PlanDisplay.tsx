@@ -29,7 +29,7 @@ export default function PlanDisplay({
 
   return (
     <div className="space-y-6">
-       <div className="hidden">
+       <div className="hidden print:block">
          <div id="printable-plan" className="printable-area pt-4 space-y-4">
             <Card>
                 <CardHeader>
@@ -58,7 +58,7 @@ export default function PlanDisplay({
          </div>
        </div>
 
-       <Card className="border-2 border-green-200 shadow-lg no-print">
+       <Card className="border-2 border-primary/20 shadow-lg no-print">
         <CardHeader className="text-center">
           <CardTitle>Your Personalized Plan</CardTitle>
           <CardDescription>
@@ -68,9 +68,9 @@ export default function PlanDisplay({
         <CardContent>
           <Tabs defaultValue="workout" className="w-full">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="workout"><Dumbbell className="mr-2" />Workout</TabsTrigger>
-              <TabsTrigger value="diet"><Apple className="mr-2" />Diet</TabsTrigger>
-              <TabsTrigger value="supplements"><Sparkles className="mr-2" />Supplements</TabsTrigger>
+              <TabsTrigger value="workout"><Dumbbell className="mr-2 h-4 w-4" />Workout</TabsTrigger>
+              <TabsTrigger value="diet"><Apple className="mr-2 h-4 w-4" />Diet</TabsTrigger>
+              <TabsTrigger value="supplements"><Sparkles className="mr-2 h-4 w-4" />Supplements</TabsTrigger>
             </TabsList>
             <div className="pt-4">
               <TabsContent value="workout">

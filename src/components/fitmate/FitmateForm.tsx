@@ -41,11 +41,6 @@ const steps = [
     fields: ["age", "weight", "height", "gender"],
   },
   {
-    title: "Health History",
-    description: "Tell us about your health background.",
-    fields: ["injuries", "previousPlan"],
-  },
-  {
     title: "Fitness Goals",
     description: "What are you aiming for?",
     fields: ["goal", "activityLevel", "experienceLevel"],
@@ -56,9 +51,9 @@ const steps = [
     fields: ["workoutDays", "workoutTime", "equipment"],
   },
   {
-    title: "Diet Preferences",
-    description: "Tell us about your eating habits.",
-    fields: ["foodPreferences"],
+    title: "Health & Diet",
+    description: "Tell us about your background.",
+    fields: ["foodPreferences", "injuries", "previousPlan"],
   },
 ];
 
@@ -104,7 +99,7 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
   };
 
   return (
-    <Card className="border-2 border-green-200 shadow-lg">
+    <Card className="border-2 border-primary/20 shadow-lg">
       <CardHeader>
         <CardTitle>{steps[currentStep].title}</CardTitle>
         <CardDescription>{steps[currentStep].description}</CardDescription>
@@ -125,7 +120,7 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
                 )}/>
                 <FormField control={form.control} name="gender" render={({ field }) => (
                   <FormItem className="md:col-span-2"><FormLabel>Gender</FormLabel><FormControl>
-                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
+                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4 pt-2">
                       <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="male" /></FormControl><FormLabel>Male</FormLabel></FormItem>
                       <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="female" /></FormControl><FormLabel>Female</FormLabel></FormItem>
                       <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="other" /></FormControl><FormLabel>Other</FormLabel></FormItem>
@@ -137,30 +132,9 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
 
             <div className={currentStep === 1 ? "block" : "hidden"}>
               <div className="space-y-4">
-                <FormField control={form.control} name="injuries" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Injuries</FormLabel>
-                    <FormControl><Textarea {...field} /></FormControl>
-                    <FormDescription>List any current or past injuries that might affect your training. If none, type 'None'.</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}/>
-                <FormField control={form.control} name="previousPlan" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Previous Plan</FormLabel>
-                    <FormControl><Textarea {...field} /></FormControl>
-                    <FormDescription>Describe any workout or diet plan you were following before. If none, type 'None'.</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}/>
-              </div>
-            </div>
-
-            <div className={currentStep === 2 ? "block" : "hidden"}>
-              <div className="space-y-4">
                 <FormField control={form.control} name="goal" render={({ field }) => (
                   <FormItem><FormLabel>Primary Goal</FormLabel><FormControl>
-                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
+                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4 pt-2">
                       <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="cut" /></FormControl><FormLabel>Cut (Lose Fat)</FormLabel></FormItem>
                       <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="bulk" /></FormControl><FormLabel>Bulk (Gain Muscle)</FormLabel></FormItem>
                       <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="maintain" /></FormControl><FormLabel>Maintain</FormLabel></FormItem>
@@ -180,7 +154,7 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
                 )}/>
                 <FormField control={form.control} name="experienceLevel" render={({ field }) => (
                    <FormItem><FormLabel>Experience Level</FormLabel><FormControl>
-                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
+                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4 pt-2">
                       <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="beginner" /></FormControl><FormLabel>Beginner</FormLabel></FormItem>
                       <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="intermediate" /></FormControl><FormLabel>Intermediate</FormLabel></FormItem>
                       <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="advanced" /></FormControl><FormLabel>Advanced</FormLabel></FormItem>
@@ -190,7 +164,7 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
               </div>
             </div>
 
-            <div className={currentStep === 3 ? "block" : "hidden"}>
+            <div className={currentStep === 2 ? "block" : "hidden"}>
               <div className="space-y-4">
                 <FormField control={form.control} name="workoutDays" render={({ field }) => (
                   <FormItem><FormLabel>Workout Days per Week</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value) || 0)} /></FormControl><FormMessage /></FormItem>
@@ -204,10 +178,26 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
               </div>
             </div>
 
-            <div className={currentStep === 4 ? "block" : "hidden"}>
+            <div className={currentStep === 3 ? "block" : "hidden"}>
               <div className="space-y-4">
                  <FormField control={form.control} name="foodPreferences" render={({ field }) => (
                   <FormItem><FormLabel>Food Preferences & Dislikes (Indian Style)</FormLabel><FormControl><Textarea {...field} /></FormControl><FormDescription>List your favorite and least favorite foods. Be specific!</FormDescription><FormMessage /></FormItem>
+                )}/>
+                 <FormField control={form.control} name="injuries" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Injuries</FormLabel>
+                    <FormControl><Textarea {...field} /></FormControl>
+                    <FormDescription>List any current or past injuries that might affect your training. If none, type 'None'.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}/>
+                <FormField control={form.control} name="previousPlan" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Previous Plan</FormLabel>
+                    <FormControl><Textarea {...field} /></FormControl>
+                    <FormDescription>Describe any workout or diet plan you were following before. If none, type 'None'.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
                 )}/>
               </div>
             </div>
