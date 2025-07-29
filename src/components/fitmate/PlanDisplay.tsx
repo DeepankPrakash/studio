@@ -14,7 +14,6 @@ type PlanDisplayProps = {
   onStartOver: () => void;
 };
 
-// A simple parser for the supplement plan string.
 const parseSupplements = (plan: string): { name: string; description: string }[] => {
   if (!plan) return [];
   const lines = plan.split('\n').filter(line => line.trim() !== '');
@@ -43,11 +42,10 @@ const parseSupplements = (plan: string): { name: string; description: string }[]
 
 const parseWorkoutPlan = (plan: string): { day: string; details: string }[] => {
     if (!plan) return [];
-    // Split the plan by day, assuming "Day X:" or similar format
     const dayRegex = /(Day\s*\d+\s*:.*)/i;
     const days = plan.split(dayRegex).filter(s => s.trim() !== '');
 
-    if (days.length <= 1) { // Fallback for unstructured plans
+    if (days.length <= 1) {
         return [{day: "Full Workout", details: plan}];
     }
 
@@ -64,11 +62,10 @@ const parseWorkoutPlan = (plan: string): { day: string; details: string }[] => {
 
 const parseDietPlan = (plan: string): { meal: string; details: string }[] => {
     if (!plan) return [];
-    // Split by common meal names followed by a colon
     const mealRegex = /(Breakfast:|Lunch:|Dinner:|Snacks:|Snack\s*\d*:|Pre-workout:|Post-workout:)/ig;
     const parts = plan.split(mealRegex).filter(s => s.trim() !== '');
 
-    if (parts.length <= 1) { // Fallback for unstructured plans
+    if (parts.length <= 1) {
         return [{ meal: "Full Day Diet", details: plan }];
     }
 
@@ -82,7 +79,6 @@ const parseDietPlan = (plan: string): { meal: string; details: string }[] => {
     }
     return meals;
 }
-
 
 export default function PlanDisplay({
   workoutPlan,
@@ -210,7 +206,7 @@ export default function PlanDisplay({
                             </CardHeader>
                             <CardContent>
                               <p className="text-sm text-muted-foreground">{supplement.description}</p>
-                            </CardContent>
+                            </Content>
                           </Card>
                         ))
                       ) : (
