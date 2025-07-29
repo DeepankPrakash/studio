@@ -26,7 +26,6 @@ import {
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Loader2, ArrowRight, ArrowLeft } from "lucide-react";
 
 type FitmateFormProps = {
@@ -99,12 +98,12 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
   };
 
   return (
-    <Card className="border-2 border-primary/20 shadow-lg">
-      <CardHeader>
-        <CardTitle>{steps[currentStep].title}</CardTitle>
-        <CardDescription>{steps[currentStep].description}</CardDescription>
-      </CardHeader>
-      <CardContent>
+    <div className="border-2 border-primary/20 shadow-lg rounded-lg">
+      <div className="p-6">
+        <h2 className="text-2xl font-semibold leading-none tracking-tight">{steps[currentStep].title}</h2>
+        <p className="text-sm text-muted-foreground mt-1.5">{steps[currentStep].description}</p>
+      </div>
+      <div className="p-6 pt-0">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(processForm)} className="space-y-6">
             <div className={currentStep === 0 ? "block" : "hidden"}>
@@ -221,7 +220,7 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
             </div>
           </form>
         </Form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

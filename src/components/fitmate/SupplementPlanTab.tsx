@@ -1,7 +1,6 @@
 
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Sparkles } from "lucide-react";
 
 type Supplement = {
@@ -38,7 +37,6 @@ const parseSupplements = (plan: string): Supplement[] => {
   return supplements;
 };
 
-
 type SupplementPlanTabProps = {
   supplementPlan: string;
 };
@@ -47,32 +45,28 @@ export default function SupplementPlanTab({ supplementPlan }: SupplementPlanTabP
   const parsedSupplements = parseSupplements(supplementPlan);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Supplement Recommendations</CardTitle>
-        <CardDescription>Based on your profile, here are a few suggestions.</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <div className="border rounded-lg p-4">
+      <div className="mb-4">
+        <h3 className="text-xl font-semibold">Supplement Recommendations</h3>
+        <p className="text-muted-foreground">Based on your profile, here are a few suggestions.</p>
+      </div>
+      <div className="space-y-4">
         {parsedSupplements.length > 0 ? (
           parsedSupplements.map((supplement, index) => (
-            <Card key={index} className="bg-muted/50">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg flex items-center gap-2">
+            <div key={index} className="bg-muted/50 p-4 rounded-lg">
+                <h4 className="text-lg font-bold flex items-center gap-2 mb-1">
                   <Sparkles className="w-5 h-5 text-yellow-500" />
                   {supplement.name}
-                </Title>
-              </CardHeader>
-              <CardContent>
+                </h4>
                 <p className="text-sm text-muted-foreground">{supplement.description}</p>
-              </CardContent>
-            </Card>
+            </div>
           ))
         ) : (
            <div className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-muted p-4 rounded-md">
             {supplementPlan}
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
