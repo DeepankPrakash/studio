@@ -66,7 +66,7 @@ const parseWorkoutPlan = (plan: string): { day: string; details: string }[] => {
 const parseDietPlan = (plan: string): { meal: string; details: string }[] => {
     if (!plan) return [];
     // Split by common meal names followed by a colon
-    const mealRegex = /(Breakfast:|Lunch:|Dinner:|Snack\s*\d*:|Pre-workout:|Post-workout:)/i;
+    const mealRegex = /(Breakfast:|Lunch:|Dinner:|Snacks:|Snack\s*\d*:|Pre-workout:|Post-workout:)/ig;
     const parts = plan.split(mealRegex).filter(s => s.trim() !== '');
 
     if (parts.length <= 1) { // Fallback for unstructured plans
