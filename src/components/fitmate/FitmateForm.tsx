@@ -114,13 +114,13 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
             <div className={currentStep === 0 ? "block" : "hidden"}>
               <div className="grid md:grid-cols-2 gap-4">
                 <FormField control={form.control} name="age" render={({ field }) => (
-                  <FormItem><FormLabel>Age</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Age</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value))} /></FormControl><FormMessage /></FormItem>
                 )}/>
                 <FormField control={form.control} name="weight" render={({ field }) => (
-                  <FormItem><FormLabel>Weight (kg)</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Weight (kg)</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value))} /></FormControl><FormMessage /></FormItem>
                 )}/>
                 <FormField control={form.control} name="height" render={({ field }) => (
-                  <FormItem><FormLabel>Height (cm)</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Height (cm)</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value))} /></FormControl><FormMessage /></FormItem>
                 )}/>
                 <FormField control={form.control} name="gender" render={({ field }) => (
                   <FormItem className="md:col-span-2"><FormLabel>Gender</FormLabel><FormControl>
@@ -192,10 +192,10 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
             <div className={currentStep === 3 ? "block" : "hidden"}>
               <div className="space-y-4">
                 <FormField control={form.control} name="workoutDays" render={({ field }) => (
-                  <FormItem><FormLabel>Workout Days per Week</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Workout Days per Week</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value))} /></FormControl><FormMessage /></FormItem>
                 )}/>
                 <FormField control={form.control} name="workoutTime" render={({ field }) => (
-                  <FormItem><FormLabel>Time per Workout (minutes)</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Time per Workout (minutes)</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value))} /></FormControl><FormMessage /></FormItem>
                 )}/>
                 <FormField control={form.control} name="equipment" render={({ field }) => (
                   <FormItem><FormLabel>Available Equipment</FormLabel><FormControl><Textarea {...field} /></FormControl><FormDescription>e.g., Dumbbells, treadmill, resistance bands, or full gym access.</FormDescription><FormMessage /></FormItem>
