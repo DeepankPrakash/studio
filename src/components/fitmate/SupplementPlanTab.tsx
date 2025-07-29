@@ -1,16 +1,18 @@
+
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Sparkles } from "lucide-react";
 
-type SupplementPlanTabProps = {
-  supplementPlan: string;
+type Supplement = {
+    name: string;
+    description: string;
 };
 
-const parseSupplements = (plan: string): { name: string; description: string }[] => {
+const parseSupplements = (plan: string): Supplement[] => {
   if (!plan) return [];
   const lines = plan.split('\n').filter(line => line.trim() !== '');
-  const supplements: { name: string; description: string }[] = [];
+  const supplements: Supplement[] = [];
   lines.forEach(line => {
     const match = line.match(/^\d+\.\s*(.*?):(.*)/);
     if (match) {
@@ -31,8 +33,12 @@ const parseSupplements = (plan: string): { name: string; description: string }[]
        return { name, description: description || 'No description available.' };
      }).filter(s => s.name);
   }
-  
+
   return supplements;
+};
+
+type SupplementPlanTabProps = {
+  supplementPlan: string;
 };
 
 export default function SupplementPlanTab({ supplementPlan }: SupplementPlanTabProps) {

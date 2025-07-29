@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -6,11 +7,12 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Button } from "@/components/ui/button";
 import { PlayCircle } from "lucide-react";
 
-type WorkoutPlanTabProps = {
-  workoutPlan: string;
+type Workout = {
+    day: string;
+    details: string;
 };
 
-const parseWorkoutPlan = (plan: string): { day: string; details: string }[] => {
+const parseWorkoutPlan = (plan: string): Workout[] => {
     if (!plan) return [];
     const dayRegex = /(Day\s*\d+\s*:.*)/i;
     const parts = plan.split(dayRegex).filter(s => s.trim() !== '');
@@ -19,7 +21,7 @@ const parseWorkoutPlan = (plan: string): { day: string; details: string }[] => {
         return [{day: "Full Workout", details: plan}];
     }
 
-    const workouts: { day: string; details: string }[] = [];
+    const workouts: Workout[] = [];
     for (let i = 0; i < parts.length; i += 2) {
         const dayTitle = parts[i]?.trim();
         const dayDetails = parts[i + 1]?.trim();
@@ -28,6 +30,10 @@ const parseWorkoutPlan = (plan: string): { day: string; details: string }[] => {
         }
     }
     return workouts;
+};
+
+type WorkoutPlanTabProps = {
+  workoutPlan: string;
 };
 
 export default function WorkoutPlanTab({ workoutPlan }: WorkoutPlanTabProps) {

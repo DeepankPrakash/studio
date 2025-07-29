@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -15,16 +16,16 @@ type PlanDisplayProps = {
   onStartOver: () => void;
 };
 
+const handlePrint = () => {
+  window.print();
+};
+
 export default function PlanDisplay({
   workoutPlan,
   dietPlan,
   supplementPlan,
   onStartOver,
 }: PlanDisplayProps) {
-
-  const handlePrint = () => {
-    window.print();
-  };
 
   return (
     <div className="space-y-6">

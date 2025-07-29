@@ -1,12 +1,14 @@
+
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
-type DietPlanTabProps = {
-    dietPlan: string;
+type Meal = {
+    meal: string;
+    details: string;
 };
 
-const parseDietPlan = (plan: string): { meal: string; details: string }[] => {
+const parseDietPlan = (plan: string): Meal[] => {
     if (!plan) return [];
     const mealRegex = /(Breakfast:|Lunch:|Dinner:|Snacks:|Snack\s*\d*:|Pre-workout:|Post-workout:)/ig;
     const parts = plan.split(mealRegex).filter(s => s.trim() !== '');
@@ -15,7 +17,7 @@ const parseDietPlan = (plan: string): { meal: string; details: string }[] => {
         return [{ meal: "Full Day Diet", details: plan }];
     }
 
-    const meals: { meal: string; details: string }[] = [];
+    const meals: Meal[] = [];
     for (let i = 0; i < parts.length; i += 2) {
         const mealTitle = parts[i]?.replace(':', '').trim();
         const mealDetails = parts[i + 1]?.trim();
@@ -24,6 +26,10 @@ const parseDietPlan = (plan: string): { meal: string; details: string }[] => {
         }
     }
     return meals;
+};
+
+type DietPlanTabProps = {
+    dietPlan: string;
 };
 
 export default function DietPlanTab({ dietPlan }: DietPlanTabProps) {

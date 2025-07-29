@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -97,7 +98,7 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
       setCurrentStep((prev) => prev - 1);
     }
   };
-  
+
   const processForm = (data: z.infer<typeof formSchema>) => {
     onSubmit(data);
   };
@@ -202,7 +203,7 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
                 )}/>
               </div>
             </div>
-            
+
             <div className={currentStep === 4 ? "block" : "hidden"}>
               <div className="space-y-4">
                  <FormField control={form.control} name="foodPreferences" render={({ field }) => (

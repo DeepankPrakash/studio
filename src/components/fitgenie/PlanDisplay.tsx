@@ -1,9 +1,13 @@
+
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Download, RefreshCw, Sparkles, Apple, Dumbbell } from 'lucide-react';
+import WorkoutPlanTab from "../fitmate/WorkoutPlanTab";
+import DietPlanTab from "../fitmate/DietPlanTab";
+import SupplementPlanTab from "../fitmate/SupplementPlanTab";
 
 type PlanDisplayProps = {
   workoutPlan: string;
@@ -55,7 +59,7 @@ export default function PlanDisplay({
        </div>
 
        <Card className="border-2 border-green-200 shadow-lg no-print">
-        <CardHeader>
+        <CardHeader className="text-center">
           <CardTitle>Your Personalized Plan</CardTitle>
           <CardDescription>
             Here are your AI-generated workout, diet, and supplement plans.
@@ -70,34 +74,13 @@ export default function PlanDisplay({
             </TabsList>
             <div className="pt-4">
               <TabsContent value="workout">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Workout Plan</CardTitle>
-                  </CardHeader>
-                  <CardContent className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-gray-50 p-4 rounded-md">
-                    {workoutPlan}
-                  </CardContent>
-                </Card>
+                <WorkoutPlanTab workoutPlan={workoutPlan} />
               </TabsContent>
               <TabsContent value="diet">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Indian-Style Diet Plan</CardTitle>
-                  </CardHeader>
-                  <CardContent className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-gray-50 p-4 rounded-md">
-                    {dietPlan}
-                  </CardContent>
-                </Card>
+                <DietPlanTab dietPlan={dietPlan} />
               </TabsContent>
               <TabsContent value="supplements">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Supplement Recommendations</CardTitle>
-                  </CardHeader>
-                  <CardContent className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-gray-50 p-4 rounded-md">
-                    {supplementPlan}
-                  </CardContent>
-                </Card>
+                 <SupplementPlanTab supplementPlan={supplementPlan} />
               </TabsContent>
             </div>
           </Tabs>
