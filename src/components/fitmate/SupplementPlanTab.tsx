@@ -35,7 +35,6 @@ const parseSupplements = (plan: string): { name: string; description: string }[]
   return supplements;
 };
 
-
 export default function SupplementPlanTab({ supplementPlan }: SupplementPlanTabProps) {
   const parsedSupplements = parseSupplements(supplementPlan);
 
