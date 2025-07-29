@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -83,6 +82,7 @@ const parseDietPlan = (plan: string): { meal: string; details: string }[] => {
     }
     return meals;
 }
+
 
 export default function PlanDisplay({
   workoutPlan,
