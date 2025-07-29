@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -51,7 +52,11 @@ Goal: {{{goal}}}
 Food Preferences: {{{foodPreferences}}}
 Macro Targets: {{{macroTargets}}}
 
-Generate an Indian-style diet plan that meets the user's needs.  Be specific with portion sizes.
+Generate an Indian-style diet plan that meets the user's needs. Be specific with portion sizes.
+Structure the response with clear headings for each meal, like "Breakfast:", "Lunch:", "Dinner:", and "Snacks:".
+For example:
+Breakfast: 2 Besan Chillas with mint chutney and 1 glass of milk.
+Lunch: 1 bowl of dal, 1 bowl of mixed vegetable curry, 2 rotis, and a side of salad.
 `,
 });
 

@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -64,9 +65,13 @@ Injuries: {{{injuries}}}
 Previous Plan: {{{previousPlan}}}
 
 
-Make sure that the plan is tailored to the user's goal, experience level, available equipment, and any mentioned injuries. If the user has injuries, suggest alternative exercises or modifications. If they were on a previous plan, consider it for progression.
+Make sure that the plan is tailored to the user's goal, experience level, available equipment, and any mentioned injuries.
+Structure the response by breaking it down into days. Each day should start with "Day X: [Focus of the day]".
+For example: "Day 1: Chest and Triceps".
+Under each day, list the exercises with sets and reps. For example: "1. Bench Press: 3 sets of 8-12 reps".
+If the user has injuries, suggest alternative exercises or modifications. If they were on a previous plan, consider it for progression.
 
-Limit your response to a single workout plan, do not list multiple options. Break down the workout plan by days.
+Limit your response to a single workout plan.
 
 Workout Plan:`,
 });
