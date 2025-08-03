@@ -27,6 +27,8 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, ArrowRight, ArrowLeft } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 
 type FitmateFormProps = {
   onSubmit: (data: z.infer<typeof formSchema>) => void;
@@ -35,21 +37,25 @@ type FitmateFormProps = {
 
 const steps = [
   {
+    id: '01',
     title: "Personal Details",
     description: "Let's get to know you.",
     fields: ["age", "weight", "height", "gender"],
   },
   {
+    id: '02',
     title: "Fitness Goals",
     description: "What are you aiming for?",
     fields: ["goal", "activityLevel", "experienceLevel"],
   },
   {
+    id: '03',
     title: "Workout Preferences",
     description: "How do you like to train?",
     fields: ["workoutDays", "workoutTime", "equipment"],
   },
   {
+    id: '04',
     title: "Health & Diet",
     description: "Tell us about your background.",
     fields: ["foodPreferences", "injuries", "previousPlan"],
@@ -98,8 +104,34 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
   };
 
   return (
-    <div className="border-2 border-primary/20 shadow-lg rounded-lg">
+    <Card className="shadow-lg">
       <div className="p-6">
+        <nav className="flex items-center justify-center mb-8" aria-label="Progress">
+            <p className="text-sm font-medium">Step {steps[currentStep].id} of {steps[steps.length - 1].id}</p>
+            <ol role="list" className="ml-8 flex items-center space-x-5">
+            {steps.map((step, index) => (
+                <li key={step.title}>
+                {currentStep > index ? (
+                    <div className="block h-2.5 w-2.5 rounded-full bg-primary hover:bg-primary/80">
+                    <span className="sr-only">{step.title}</span>
+                    </div>
+                ) : currentStep === index ? (
+                    <div className="relative flex items-center justify-center" aria-current="step">
+                    <span className="absolute flex h-5 w-5 p-px" aria-hidden="true">
+                        <span className="h-full w-full rounded-full bg-primary/20" />
+                    </span>
+                    <span className="relative block h-2.5 w-2.5 rounded-full bg-primary" aria-hidden="true" />
+                    <span className="sr-only">{step.title}</span>
+                    </div>
+                ) : (
+                    <div className="block h-2.5 w-2.5 rounded-full bg-muted hover:bg-muted/80">
+                    <span className="sr-only">{step.title}</span>
+                    </div>
+                )}
+                </li>
+            ))}
+            </ol>
+        </nav>
         <h2 className="text-2xl font-semibold leading-none tracking-tight">{steps[currentStep].title}</h2>
         <p className="text-sm text-muted-foreground mt-1.5">{steps[currentStep].description}</p>
       </div>
@@ -120,9 +152,9 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
                 <FormField control={form.control} name="gender" render={({ field }) => (
                   <FormItem className="md:col-span-2"><FormLabel>Gender</FormLabel><FormControl>
                     <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4 pt-2">
-                      <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="male" /></FormControl><FormLabel>Male</FormLabel></FormItem>
-                      <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="female" /></FormControl><FormLabel>Female</FormLabel></FormItem>
-                      <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="other" /></FormControl><FormLabel>Other</FormLabel></FormItem>
+                      <FormItem className="flex items-center space-x-3"><FormControl><RadioGroupItem value="male" /></FormControl><FormLabel className="font-normal">Male</FormLabel></FormItem>
+                      <FormItem className="flex items-center space-x-3"><FormControl><RadioGroupItem value="female" /></FormControl><FormLabel className="font-normal">Female</FormLabel></FormItem>
+                      <FormItem className="flex items-center space-x-3"><FormControl><RadioGroupItem value="other" /></FormControl><FormLabel className="font-normal">Other</FormLabel></FormItem>
                     </RadioGroup>
                   </FormControl><FormMessage /></FormItem>
                 )}/>
@@ -133,10 +165,10 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
               <div className="space-y-4">
                 <FormField control={form.control} name="goal" render={({ field }) => (
                   <FormItem><FormLabel>Primary Goal</FormLabel><FormControl>
-                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4 pt-2">
-                      <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="cut" /></FormControl><FormLabel>Cut (Lose Fat)</FormLabel></FormItem>
-                      <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="bulk" /></FormControl><FormLabel>Bulk (Gain Muscle)</FormLabel></FormItem>
-                      <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="maintain" /></FormControl><FormLabel>Maintain</FormLabel></FormItem>
+                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col space-y-1 pt-2">
+                      <FormItem className="flex items-center space-x-3"><FormControl><RadioGroupItem value="cut" /></FormControl><FormLabel className="font-normal">Cut (Lose Fat)</FormLabel></FormItem>
+                      <FormItem className="flex items-center space-x-3"><FormControl><RadioGroupItem value="bulk" /></FormControl><FormLabel className="font-normal">Bulk (Gain Muscle)</FormLabel></FormItem>
+                      <FormItem className="flex items-center space-x-3"><FormControl><RadioGroupItem value="maintain" /></FormControl><FormLabel className="font-normal">Maintain</FormLabel></FormItem>
                     </RadioGroup>
                   </FormControl><FormMessage /></FormItem>
                 )}/>
@@ -153,10 +185,10 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
                 )}/>
                 <FormField control={form.control} name="experienceLevel" render={({ field }) => (
                    <FormItem><FormLabel>Experience Level</FormLabel><FormControl>
-                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4 pt-2">
-                      <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="beginner" /></FormControl><FormLabel>Beginner</FormLabel></FormItem>
-                      <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="intermediate" /></FormControl><FormLabel>Intermediate</FormLabel></FormItem>
-                      <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="advanced" /></FormControl><FormLabel>Advanced</FormLabel></FormItem>
+                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col space-y-1 pt-2">
+                      <FormItem className="flex items-center space-x-3"><FormControl><RadioGroupItem value="beginner" /></FormControl><FormLabel className="font-normal">Beginner</FormLabel></FormItem>
+                      <FormItem className="flex items-center space-x-3"><FormControl><RadioGroupItem value="intermediate" /></FormControl><FormLabel className="font-normal">Intermediate</FormLabel></FormItem>
+                      <FormItem className="flex items-center space-x-3"><FormControl><RadioGroupItem value="advanced" /></FormControl><FormLabel className="font-normal">Advanced</FormLabel></FormItem>
                     </RadioGroup>
                   </FormControl><FormMessage /></FormItem>
                 )}/>
@@ -203,7 +235,7 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
 
 
             <div className="flex justify-between pt-4">
-              <Button type="button" onClick={prevStep} disabled={currentStep === 0 || loading}>
+              <Button type="button" onClick={prevStep} variant="outline" disabled={currentStep === 0 || loading}>
                 <ArrowLeft className="mr-2 h-4 w-4" /> Previous
               </Button>
               {currentStep < steps.length - 1 && (
@@ -212,7 +244,7 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
                 </Button>
               )}
               {currentStep === steps.length - 1 && (
-                <Button type="submit" disabled={loading}>
+                <Button type="submit" disabled={loading} size="lg">
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Generate Plan
                 </Button>
@@ -221,6 +253,6 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
           </form>
         </Form>
       </div>
-    </div>
+    </Card>
   );
 }
