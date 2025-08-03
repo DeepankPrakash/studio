@@ -46,6 +46,7 @@ const prompt = ai.definePrompt({
 
 You will use the user's information to generate a personalized 7-day diet plan, taking into account their fitness goal, food preferences, and macro targets.
 
+User Information:
 Age: {{{age}}}
 Weight: {{{weight}}} kg
 Goal: {{{goal}}}
@@ -55,13 +56,17 @@ Macro Targets: {{{macroTargets}}}
 Generate a detailed 7-day Indian-style diet plan.
 For each day, structure the response with clear headings for the day (e.g., "Day 1", "Day 2", etc.).
 Under each day, provide meals for Breakfast, Lunch, and Dinner.
-For each meal, list the food items, provide the approximate macronutrient breakdown (Protein, Carbs, Fats in grams), and then provide simple cooking instructions.
+For each meal, you MUST follow this exact format:
+1. The meal name on its own line.
+2. A line starting with "Macros:" followed by the protein, carbs, and fats in grams.
+3. A line starting with "Cooking Instructions:" followed by the cooking steps.
 
-Use the labels "Macros:" and "Cooking Instructions:" for each meal entry.
-For example:
+Here is an example for one meal:
 Breakfast: 2 Besan Chillas with mint chutney.
 Macros: Protein: 20g, Carbs: 30g, Fats: 10g
 Cooking Instructions: Mix 1 cup of besan (gram flour) with water, salt, turmeric, and finely chopped onions to make a batter. Pour onto a hot non-stick pan and cook on both sides until golden brown. Serve with mint chutney.
+
+Produce a response for all 7 days following this structure for every meal (Breakfast, Lunch, Dinner).
 `,
 });
 

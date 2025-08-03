@@ -19,52 +19,54 @@ type DailyDiet = {
 const parseDietPlan = (plan: string): DailyDiet[] => {
     if (!plan) return [];
 
-    const dayBlocks = plan.split(/(?=^Day\s*\d+)/im).filter(Boolean);
+    const dailyPlans: DailyDiet[] = [];
+    const dayBlocks = plan.split(/(?=^Day\s*\d+)/im).filter(s => s.trim());
 
-    return dayBlocks.map(block => {
+    dayBlocks.forEach(block => {
         const lines = block.trim().split('\n');
-        const day = lines[0]?.trim() || 'Unknown Day';
+        const dayMatch = lines[0].match(/Day\s*\d+/i);
+        if (!dayMatch) return;
 
+        const day = dayMatch[0];
         const meals: Meal[] = [];
-        let currentMeal: Partial<Meal> & { type: string } | null = null;
+        let currentMeal: Partial<Meal> | null = null;
         
-        const mealMarkers = ['Breakfast:', 'Lunch:', 'Dinner:'];
+        const mealTypes = ['Breakfast:', 'Lunch:', 'Dinner:'];
 
         for (let i = 1; i < lines.length; i++) {
             const line = lines[i].trim();
-            const marker = mealMarkers.find(m => line.startsWith(m));
-
-            if (marker) {
-                if (currentMeal) {
-                    meals.push({
-                        name: `${currentMeal.type} ${currentMeal.name || ''}`,
-                        macros: currentMeal.macros || 'Not specified',
-                        instructions: currentMeal.instructions || 'Not specified'
-                    });
+            
+            const mealType = mealTypes.find(type => line.startsWith(type));
+            
+            if (mealType) {
+                 if (currentMeal?.name && currentMeal?.macros && currentMeal?.instructions) {
+                    meals.push(currentMeal as Meal);
                 }
-                currentMeal = { type: marker.replace(':', ''), name: line.substring(marker.length).trim(), instructions: '' };
+                currentMeal = { name: line };
             } else if (currentMeal) {
                 if (line.startsWith('Macros:')) {
                     currentMeal.macros = line.substring('Macros:'.length).trim();
                 } else if (line.startsWith('Cooking Instructions:')) {
                     currentMeal.instructions = line.substring('Cooking Instructions:'.length).trim();
                 } else if (currentMeal.instructions) {
+                    // Append to existing instructions if they span multiple lines
                     currentMeal.instructions += `\n${line}`;
                 }
             }
         }
         
-        if (currentMeal) {
-            meals.push({
-                name: `${currentMeal.type} ${currentMeal.name || ''}`,
-                macros: currentMeal.macros || 'Not specified',
-                instructions: currentMeal.instructions || 'Not specified'
-            });
+        if (currentMeal?.name && currentMeal?.macros && currentMeal?.instructions) {
+            meals.push(currentMeal as Meal);
         }
-        
-        return { day, meals };
-    }).filter(d => d.meals.length > 0);
+
+        if (meals.length > 0) {
+            dailyPlans.push({ day, meals });
+        }
+    });
+
+    return dailyPlans;
 };
+
 
 type DietPlanTabProps = {
     dietPlan: string;
@@ -72,6 +74,20 @@ type DietPlanTabProps = {
 
 export default function DietPlanTab({ dietPlan }: DietPlanTabProps) {
     const parsedDiet = parseDietPlan(dietPlan);
+
+    if (parsedDiet.length === 0) {
+        return (
+             <Card>
+                <CardHeader>
+                    <CardTitle>Weekly Meal Plan</CardTitle>
+                    <CardDescription>Your 7-day Indian-style diet plan with macros and cooking instructions.</CardDescription>
+                </CardHeader>
+                <CardContent className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-muted p-4 rounded-md">
+                    {dietPlan || "No diet plan generated. Please try again."}
+                </CardContent>
+            </Card>
+        )
+    }
 
     return (
         <Card>
