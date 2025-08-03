@@ -1,6 +1,7 @@
 
 "use client";
 
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Sparkles } from "lucide-react";
 
 type Supplement = {
@@ -45,12 +46,12 @@ export default function SupplementPlanTab({ supplementPlan }: SupplementPlanTabP
   const parsedSupplements = parseSupplements(supplementPlan);
 
   return (
-    <div className="border rounded-lg p-4">
-      <div className="mb-4">
-        <h3 className="text-xl font-semibold">Supplement Recommendations</h3>
-        <p className="text-muted-foreground">Based on your profile, here are a few suggestions.</p>
-      </div>
-      <div className="space-y-4">
+    <Card>
+      <CardHeader>
+        <CardTitle>Supplement Recommendations</CardTitle>
+        <CardDescription>Based on your profile, here are a few suggestions.</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
         {parsedSupplements.length > 0 ? (
           parsedSupplements.map((supplement, index) => (
             <div key={index} className="bg-muted/50 p-4 rounded-lg">
@@ -66,7 +67,7 @@ export default function SupplementPlanTab({ supplementPlan }: SupplementPlanTabP
             {supplementPlan}
           </div>
         )}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

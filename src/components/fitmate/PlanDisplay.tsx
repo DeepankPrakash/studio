@@ -1,6 +1,7 @@
 
 "use client";
 
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Download, RefreshCw, Sparkles, Apple, Dumbbell } from 'lucide-react';
@@ -28,42 +29,48 @@ export default function PlanDisplay({
 
   return (
     <div className="space-y-6">
-       <div className="hidden print:block">
+       <div className="hidden">
          <div id="printable-plan" className="printable-area pt-4 space-y-4">
-            <div className="p-4 border rounded-lg">
-                <h3 className="text-lg font-bold mb-2">Workout Plan</h3>
-                <pre className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-gray-50 p-4 rounded-md">
-                  {workoutPlan}
-                </pre>
-            </div>
-             <div className="p-4 border rounded-lg">
-                <h3 className="text-lg font-bold mb-2">Indian-Style Diet Plan</h3>
-                 <pre className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-gray-50 p-4 rounded-md">
-                  {dietPlan}
-                </pre>
-            </div>
-             <div className="p-4 border rounded-lg">
-                <h3 className="text-lg font-bold mb-2">Supplement Recommendations</h3>
-                 <pre className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-gray-50 p-4 rounded-md">
-                  {supplementPlan}
-                </pre>
-            </div>
+            <Card>
+                <CardHeader>
+                <CardTitle>Workout Plan</CardTitle>
+                </CardHeader>
+                <CardContent className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-gray-50 p-4 rounded-md">
+                {workoutPlan}
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader>
+                <CardTitle>Indian-Style Diet Plan</CardTitle>
+                </CardHeader>
+                <CardContent className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-gray-50 p-4 rounded-md">
+                {dietPlan}
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader>
+                <CardTitle>Supplement Recommendations</CardTitle>
+                </CardHeader>
+                <CardContent className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-gray-50 p-4 rounded-md">
+                {supplementPlan}
+                </CardContent>
+            </Card>
          </div>
        </div>
 
-       <div className="border-2 border-primary/20 shadow-lg rounded-lg no-print">
-        <div className="text-center p-6">
-          <h2 className="text-2xl font-semibold leading-none tracking-tight">Your Personalized Plan</h2>
-          <p className="text-sm text-muted-foreground mt-1.5">
+       <Card className="border-2 border-green-200 shadow-lg no-print">
+        <CardHeader className="text-center">
+          <CardTitle>Your Personalized Plan</CardTitle>
+          <CardDescription>
             Here are your AI-generated workout, diet, and supplement plans.
-          </p>
-        </div>
-        <div className="p-6 pt-0">
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
           <Tabs defaultValue="workout" className="w-full">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="workout"><Dumbbell className="mr-2 h-4 w-4" />Workout</TabsTrigger>
-              <TabsTrigger value="diet"><Apple className="mr-2 h-4 w-4" />Diet</TabsTrigger>
-              <TabsTrigger value="supplements"><Sparkles className="mr-2 h-4 w-4" />Supplements</TabsTrigger>
+              <TabsTrigger value="workout"><Dumbbell className="mr-2" />Workout</TabsTrigger>
+              <TabsTrigger value="diet"><Apple className="mr-2" />Diet</TabsTrigger>
+              <TabsTrigger value="supplements"><Sparkles className="mr-2" />Supplements</TabsTrigger>
             </TabsList>
             <div className="pt-4">
               <TabsContent value="workout">
@@ -77,8 +84,8 @@ export default function PlanDisplay({
               </TabsContent>
             </div>
           </Tabs>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       <div className="flex flex-col sm:flex-row gap-4 justify-center no-print pt-4">
         <Button onClick={handlePrint}><Download className="mr-2 h-4 w-4" /> Download Plan</Button>

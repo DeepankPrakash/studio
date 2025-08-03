@@ -1,6 +1,8 @@
 
 "use client";
 
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+
 type Meal = {
     meal: string;
     details: string;
@@ -34,19 +36,19 @@ export default function DietPlanTab({ dietPlan }: DietPlanTabProps) {
     const parsedDiet = parseDietPlan(dietPlan);
 
     return (
-        <div className="border rounded-lg p-4">
-            <div className="mb-4">
-                <h3 className="text-xl font-semibold">Daily Meal Plan</h3>
-                <p className="text-muted-foreground">Your Indian-style diet plan for the day.</p>
-            </div>
-            <div className="space-y-4">
+        <Card>
+            <CardHeader>
+                <CardTitle>Daily Meal Plan</CardTitle>
+                <CardDescription>Your Indian-style diet plan for the day.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
                 {parsedDiet.map((meal, index) => (
                     <div key={index} className="bg-muted/50 p-4 rounded-lg">
                         <h4 className="font-bold text-lg mb-1">{meal.meal}</h4>
                         <p className="whitespace-pre-wrap font-mono text-sm">{meal.details}</p>
                     </div>
                 ))}
-            </div>
-        </div>
+            </CardContent>
+        </Card>
     );
 }
