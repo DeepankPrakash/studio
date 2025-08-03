@@ -19,33 +19,50 @@ type DailyDiet = {
 const parseDietPlan = (plan: string): DailyDiet[] => {
     if (!plan) return [];
 
-    const days = plan.split(/Day\s*\d+/i).filter(s => s.trim());
-    const dayTitles = plan.match(/Day\s*\d+/gi) || [];
+    const dayBlocks = plan.split(/(?=^Day\s*\d+)/im).filter(Boolean);
 
-    return days.map((dayContent, index) => {
-        const dayTitle = dayTitles[index] || `Day ${index + 1}`;
-        const mealRegex = /(Breakfast:|Lunch:|Dinner:)/gi;
-        const mealsContent = dayContent.split(mealRegex).filter(s => s.trim());
+    return dayBlocks.map(block => {
+        const lines = block.trim().split('\n');
+        const day = lines[0]?.trim() || 'Unknown Day';
 
         const meals: Meal[] = [];
-        for (let i = 0; i < mealsContent.length; i += 2) {
-            const mealType = mealsContent[i].replace(':', '').trim();
-            const mealDetails = mealsContent[i+1]?.trim();
+        let currentMeal: Partial<Meal> & { type: string } | null = null;
+        
+        const mealMarkers = ['Breakfast:', 'Lunch:', 'Dinner:'];
 
-            if (mealType && mealDetails) {
-                const nameMatch = mealDetails.split('\n')[0]?.trim();
-                const macrosMatch = mealDetails.match(/Macros:(.*)/i);
-                const instructionsMatch = mealDetails.match(/Cooking Instructions:(.*)/is);
+        for (let i = 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+            const marker = mealMarkers.find(m => line.startsWith(m));
 
-                meals.push({
-                    name: `${mealType}: ${nameMatch || ''}`,
-                    macros: macrosMatch ? macrosMatch[1].trim() : 'Not specified',
-                    instructions: instructionsMatch ? instructionsMatch[1].trim() : 'Not specified',
-                });
+            if (marker) {
+                if (currentMeal) {
+                    meals.push({
+                        name: `${currentMeal.type} ${currentMeal.name || ''}`,
+                        macros: currentMeal.macros || 'Not specified',
+                        instructions: currentMeal.instructions || 'Not specified'
+                    });
+                }
+                currentMeal = { type: marker.replace(':', ''), name: line.substring(marker.length).trim(), instructions: '' };
+            } else if (currentMeal) {
+                if (line.startsWith('Macros:')) {
+                    currentMeal.macros = line.substring('Macros:'.length).trim();
+                } else if (line.startsWith('Cooking Instructions:')) {
+                    currentMeal.instructions = line.substring('Cooking Instructions:'.length).trim();
+                } else if (currentMeal.instructions) {
+                    currentMeal.instructions += `\n${line}`;
+                }
             }
         }
         
-        return { day: dayTitle.trim(), meals };
+        if (currentMeal) {
+            meals.push({
+                name: `${currentMeal.type} ${currentMeal.name || ''}`,
+                macros: currentMeal.macros || 'Not specified',
+                instructions: currentMeal.instructions || 'Not specified'
+            });
+        }
+        
+        return { day, meals };
     }).filter(d => d.meals.length > 0);
 };
 

@@ -57,22 +57,11 @@ For each day, structure the response with clear headings for the day (e.g., "Day
 Under each day, provide meals for Breakfast, Lunch, and Dinner.
 For each meal, list the food items, provide the approximate macronutrient breakdown (Protein, Carbs, Fats in grams), and then provide simple cooking instructions.
 
-Use the following exact format for each meal entry, including the labels "Macros:" and "Cooking Instructions:":
-[Meal Type]: [Dish Name]
-Macros: Protein: [X]g, Carbs: [Y]g, Fats: [Z]g
-Cooking Instructions: [Instructions]
-
-Example for one day:
-Day 1
+Use the labels "Macros:" and "Cooking Instructions:" for each meal entry.
+For example:
 Breakfast: 2 Besan Chillas with mint chutney.
 Macros: Protein: 20g, Carbs: 30g, Fats: 10g
 Cooking Instructions: Mix 1 cup of besan (gram flour) with water, salt, turmeric, and finely chopped onions to make a batter. Pour onto a hot non-stick pan and cook on both sides until golden brown. Serve with mint chutney.
-Lunch: 1 bowl of dal, 1 bowl of mixed vegetable curry, 2 rotis.
-Macros: Protein: 25g, Carbs: 60g, Fats: 15g
-Cooking Instructions: For dal, pressure cook 1/2 cup of toor dal with turmeric and salt. For the curry, sauté mixed vegetables (carrots, beans, peas) with onion, tomato, and spices. Serve with fresh rotis.
-Dinner: 150g of Paneer Tikka.
-Macros: Protein: 30g, Carbs: 10g, Fats: 20g
-Cooking Instructions: Marinate paneer cubes in yogurt and tandoori masala. Grill or pan-fry until lightly charred.
 `,
 });
 
