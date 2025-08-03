@@ -57,7 +57,7 @@ For each day, structure the response with clear headings for the day (e.g., "Day
 Under each day, provide meals for Breakfast, Lunch, and Dinner.
 For each meal, list the food items, provide the approximate macronutrient breakdown (Protein, Carbs, Fats in grams), and then provide simple cooking instructions.
 
-Use the following exact format for each meal entry:
+Use the following exact format for each meal entry, including the labels "Macros:" and "Cooking Instructions:":
 [Meal Type]: [Dish Name]
 Macros: Protein: [X]g, Carbs: [Y]g, Fats: [Z]g
 Cooking Instructions: [Instructions]

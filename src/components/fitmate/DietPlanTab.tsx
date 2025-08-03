@@ -18,37 +18,35 @@ type DailyDiet = {
 
 const parseDietPlan = (plan: string): DailyDiet[] => {
     if (!plan) return [];
-    const dayRegex = /(Day\s*\d+\s*)/i;
-    const dailyPlans = plan.split(dayRegex).filter(s => s.trim() !== '');
 
-    const result: DailyDiet[] = [];
-    for (let i = 0; i < dailyPlans.length; i += 2) {
-        const dayTitle = dailyPlans[i]?.trim();
-        const dayContent = dailyPlans[i + 1]?.trim();
-        if (dayTitle && dayContent) {
-            const mealRegex = /(Breakfast:|Lunch:|Dinner:)/gi;
-            const mealParts = dayContent.split(mealRegex).filter(p => p.trim() !== '');
-            const meals: Meal[] = [];
-            for (let j = 0; j < mealParts.length; j += 2) {
-                const mealType = mealParts[j].replace(':', '').trim();
-                const mealDetails = mealParts[j + 1]?.trim();
-                if(mealType && mealDetails) {
-                    const lines = mealDetails.split('\n');
-                    const dishName = lines[0]?.trim() || '';
-                    const macrosLine = lines.find(line => line.toLowerCase().startsWith('macros:'));
-                    const instructionsLine = lines.find(line => line.toLowerCase().startsWith('cooking instructions:'));
-                    
-                    meals.push({
-                        name: `${mealType}: ${dishName}`,
-                        macros: macrosLine ? macrosLine.replace(/macros:\s*/i, '') : 'Not specified',
-                        instructions: instructionsLine ? instructionsLine.replace(/cooking instructions:\s*/i, '') : 'Not specified',
-                    });
-                }
+    const days = plan.split(/Day\s*\d+/i).filter(s => s.trim());
+    const dayTitles = plan.match(/Day\s*\d+/gi) || [];
+
+    return days.map((dayContent, index) => {
+        const dayTitle = dayTitles[index] || `Day ${index + 1}`;
+        const mealRegex = /(Breakfast:|Lunch:|Dinner:)/gi;
+        const mealsContent = dayContent.split(mealRegex).filter(s => s.trim());
+
+        const meals: Meal[] = [];
+        for (let i = 0; i < mealsContent.length; i += 2) {
+            const mealType = mealsContent[i].replace(':', '').trim();
+            const mealDetails = mealsContent[i+1]?.trim();
+
+            if (mealType && mealDetails) {
+                const nameMatch = mealDetails.split('\n')[0]?.trim();
+                const macrosMatch = mealDetails.match(/Macros:(.*)/i);
+                const instructionsMatch = mealDetails.match(/Cooking Instructions:(.*)/is);
+
+                meals.push({
+                    name: `${mealType}: ${nameMatch || ''}`,
+                    macros: macrosMatch ? macrosMatch[1].trim() : 'Not specified',
+                    instructions: instructionsMatch ? instructionsMatch[1].trim() : 'Not specified',
+                });
             }
-             result.push({ day: dayTitle, meals });
         }
-    }
-    return result;
+        
+        return { day: dayTitle.trim(), meals };
+    }).filter(d => d.meals.length > 0);
 };
 
 type DietPlanTabProps = {
@@ -67,7 +65,7 @@ export default function DietPlanTab({ dietPlan }: DietPlanTabProps) {
             <CardContent className="space-y-4">
                  <Accordion type="single" collapsible className="w-full">
                     {parsedDiet.map((diet, index) => (
-                        <AccordionItem value={`item-${index}`} key={index}>
+                        <AccordionItem value={`day-${index}`} key={index}>
                             <AccordionTrigger>{diet.day}</AccordionTrigger>
                             <AccordionContent>
                                 <div className="space-y-4">
@@ -79,7 +77,7 @@ export default function DietPlanTab({ dietPlan }: DietPlanTabProps) {
                                                 {meal.macros}
                                             </p>
                                             <Accordion type="single" collapsible className="w-full">
-                                                <AccordionItem value={`instr-${mealIndex}`}>
+                                                <AccordionItem value={`instr-${index}-${mealIndex}`}>
                                                     <AccordionTrigger className="text-sm py-2">Cooking Instructions</AccordionTrigger>
                                                     <AccordionContent>
                                                         <p className="prose prose-sm max-w-none whitespace-pre-wrap text-sm">
