@@ -2,8 +2,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Flame } from "lucide-react";
+import { Flame, ChefHat } from "lucide-react";
 
 type Meal = {
     name: string;
@@ -20,26 +19,23 @@ const parseDietPlan = (plan: string): DailyDiet[] => {
     if (!plan) return [];
 
     const dailyPlans: DailyDiet[] = [];
-    const dayBlocks = plan.split(/(?=^Day\s*\d+)/im).filter(s => s.trim());
+    const dayBlocks = plan.split(/(?=^Day\s*\d+\s*:)/im).filter(s => s.trim());
 
     dayBlocks.forEach(block => {
         const lines = block.trim().split('\n');
-        const dayMatch = lines[0].match(/Day\s*\d+/i);
+        const dayMatch = lines[0].match(/Day\s*\d+\s*:/i);
         if (!dayMatch) return;
 
-        const day = dayMatch[0];
+        const day = dayMatch[0].replace(':', '').trim();
         const meals: Meal[] = [];
         let currentMeal: Partial<Meal> | null = null;
         
-        const mealTypes = ['Breakfast:', 'Lunch:', 'Dinner:'];
-
         for (let i = 1; i < lines.length; i++) {
             const line = lines[i].trim();
-            
-            const mealType = mealTypes.find(type => line.startsWith(type));
-            
-            if (mealType) {
-                 if (currentMeal?.name && currentMeal?.macros && currentMeal?.instructions) {
+            const isMealLine = line.includes('Breakfast:') || line.includes('Lunch:') || line.includes('Dinner:');
+
+            if (isMealLine) {
+                if (currentMeal?.name && currentMeal?.macros && currentMeal?.instructions) {
                     meals.push(currentMeal as Meal);
                 }
                 currentMeal = { name: line };
@@ -49,8 +45,11 @@ const parseDietPlan = (plan: string): DailyDiet[] => {
                 } else if (line.startsWith('Cooking Instructions:')) {
                     currentMeal.instructions = line.substring('Cooking Instructions:'.length).trim();
                 } else if (currentMeal.instructions) {
-                    // Append to existing instructions if they span multiple lines
                     currentMeal.instructions += `\n${line}`;
+                } else if(currentMeal.name && !currentMeal.macros) {
+                    // Handle cases where instructions are not explicitly labeled
+                    currentMeal.macros = "Not specified";
+                    currentMeal.instructions = line;
                 }
             }
         }
@@ -95,37 +94,32 @@ export default function DietPlanTab({ dietPlan }: DietPlanTabProps) {
                 <CardTitle>Weekly Meal Plan</CardTitle>
                 <CardDescription>Your 7-day Indian-style diet plan with macros and cooking instructions.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-                 <Accordion type="single" collapsible className="w-full">
-                    {parsedDiet.map((diet, index) => (
-                        <AccordionItem value={`day-${index}`} key={index}>
-                            <AccordionTrigger>{diet.day}</AccordionTrigger>
-                            <AccordionContent>
-                                <div className="space-y-4">
-                                    {diet.meals.map((meal, mealIndex) => (
-                                        <div key={mealIndex} className="p-4 bg-muted/50 rounded-lg">
-                                            <h4 className="text-md font-semibold">{meal.name}</h4>
-                                            <p className="text-sm text-muted-foreground flex items-center gap-1 my-1">
-                                                <Flame className="w-4 h-4 text-orange-500" />
-                                                {meal.macros}
-                                            </p>
-                                            <Accordion type="single" collapsible className="w-full">
-                                                <AccordionItem value={`instr-${index}-${mealIndex}`}>
-                                                    <AccordionTrigger className="text-sm py-2">Cooking Instructions</AccordionTrigger>
-                                                    <AccordionContent>
-                                                        <p className="prose prose-sm max-w-none whitespace-pre-wrap text-sm">
-                                                            {meal.instructions}
-                                                        </p>
-                                                    </AccordionContent>
-                                                </AccordionItem>
-                                            </Accordion>
-                                        </div>
-                                    ))}
-                                </div>
-                            </AccordionContent>
-                        </AccordionItem>
-                    ))}
-                </Accordion>
+            <CardContent className="space-y-6">
+                {parsedDiet.map((diet, index) => (
+                    <div key={index} className="space-y-4">
+                        <h3 className="text-lg font-semibold border-b pb-2">{diet.day}</h3>
+                        <ul className="space-y-4 pl-4">
+                            {diet.meals.map((meal, mealIndex) => (
+                                <li key={mealIndex} className="bg-muted/50 p-4 rounded-lg list-none ml-[-1rem]">
+                                    <h4 className="text-md font-semibold">{meal.name}</h4>
+                                    <p className="text-sm text-muted-foreground flex items-center gap-1 my-2">
+                                        <Flame className="w-4 h-4 text-orange-500" />
+                                        <strong>Macros:</strong> {meal.macros}
+                                    </p>
+                                    <div className="text-sm">
+                                        <h5 className="font-semibold flex items-center gap-1 mb-1">
+                                            <ChefHat className="w-4 h-4 text-primary" />
+                                            Cooking Instructions:
+                                        </h5>
+                                        <p className="prose prose-sm max-w-none whitespace-pre-wrap text-muted-foreground pl-2">
+                                            {meal.instructions}
+                                        </p>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                ))}
             </CardContent>
         </Card>
     );
