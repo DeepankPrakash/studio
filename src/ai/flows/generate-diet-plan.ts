@@ -28,7 +28,7 @@ const GenerateDietPlanInputSchema = z.object({
 export type GenerateDietPlanInput = z.infer<typeof GenerateDietPlanInputSchema>;
 
 const GenerateDietPlanOutputSchema = z.object({
-  dietPlan: z.string().describe('The generated Indian-style diet plan.'),
+  dietPlan: z.string().describe('The generated Indian-style diet plan for 7 days with cooking instructions.'),
 });
 export type GenerateDietPlanOutput = z.infer<typeof GenerateDietPlanOutputSchema>;
 
@@ -42,9 +42,9 @@ const prompt = ai.definePrompt({
   name: 'generateDietPlanPrompt',
   input: {schema: GenerateDietPlanInputSchema},
   output: {schema: GenerateDietPlanOutputSchema},
-  prompt: `You are an expert nutritionist specializing in creating Indian-style diet plans.
+  prompt: `You are an expert nutritionist specializing in creating 7-day Indian-style diet plans.
 
-You will use the user's information to generate a personalized diet plan, taking into account their fitness goal, food preferences, and macro targets.
+You will use the user's information to generate a personalized 7-day diet plan, taking into account their fitness goal, food preferences, and macro targets.
 
 Age: {{{age}}}
 Weight: {{{weight}}} kg
@@ -52,11 +52,19 @@ Goal: {{{goal}}}
 Food Preferences: {{{foodPreferences}}}
 Macro Targets: {{{macroTargets}}}
 
-Generate an Indian-style diet plan that meets the user's needs. Be specific with portion sizes.
-Structure the response with clear headings for each meal, like "Breakfast:", "Lunch:", "Dinner:", and "Snacks:".
-For example:
-Breakfast: 2 Besan Chillas with mint chutney and 1 glass of milk.
-Lunch: 1 bowl of dal, 1 bowl of mixed vegetable curry, 2 rotis, and a side of salad.
+Generate a detailed 7-day Indian-style diet plan.
+For each day, structure the response with clear headings for the day (e.g., "Day 1", "Day 2", etc.).
+Under each day, provide meals for Breakfast, Lunch, and Dinner.
+For each meal, list the food items and provide simple cooking instructions.
+
+Example for one day:
+Day 1
+Breakfast: 2 Besan Chillas with mint chutney.
+- Cooking Instructions: Mix 1 cup of besan (gram flour) with water, salt, turmeric, and finely chopped onions to make a batter. Pour onto a hot non-stick pan and cook on both sides until golden brown. Serve with mint chutney.
+Lunch: 1 bowl of dal, 1 bowl of mixed vegetable curry, 2 rotis.
+- Cooking Instructions: For dal, pressure cook 1/2 cup of toor dal with turmeric and salt. For the curry, sauté mixed vegetables (carrots, beans, peas) with onion, tomato, and spices. Serve with fresh rotis.
+Dinner: 150g of Paneer Tikka.
+- Cooking Instructions: Marinate paneer cubes in yogurt and tandoori masala. Grill or pan-fry until lightly charred.
 `,
 });
 

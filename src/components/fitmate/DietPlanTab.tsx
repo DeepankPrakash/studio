@@ -2,30 +2,32 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
-type Meal = {
-    meal: string;
+type DailyDiet = {
+    day: string;
     details: string;
 };
 
-const parseDietPlan = (plan: string): Meal[] => {
+const parseDailyDiet = (plan: string): DailyDiet[] => {
     if (!plan) return [];
-    const mealRegex = /(Breakfast:|Lunch:|Dinner:|Snacks:|Snack\s*\d*:|Pre-workout:|Post-workout:)/ig;
-    const parts = plan.split(mealRegex).filter(s => s.trim() !== '');
+    // Regex to split by "Day X"
+    const dayRegex = /(Day\s*\d+\s*)/i;
+    const parts = plan.split(dayRegex).filter(s => s.trim() !== '');
 
     if (parts.length <= 1) {
-        return [{ meal: "Full Day Diet", details: plan }];
+        return [{ day: "Full Diet Plan", details: plan }];
     }
-
-    const meals: Meal[] = [];
+    
+    const diets: DailyDiet[] = [];
     for (let i = 0; i < parts.length; i += 2) {
-        const mealTitle = parts[i]?.replace(':', '').trim();
-        const mealDetails = parts[i + 1]?.trim();
-        if (mealTitle && mealDetails) {
-            meals.push({ meal: mealTitle, details: mealDetails });
+        const dayTitle = parts[i]?.trim();
+        const dayDetails = parts[i + 1]?.trim();
+        if (dayTitle && dayDetails) {
+            diets.push({ day: dayTitle, details: dayDetails });
         }
     }
-    return meals;
+    return diets;
 };
 
 type DietPlanTabProps = {
@@ -33,21 +35,27 @@ type DietPlanTabProps = {
 };
 
 export default function DietPlanTab({ dietPlan }: DietPlanTabProps) {
-    const parsedDiet = parseDietPlan(dietPlan);
+    const parsedDiet = parseDailyDiet(dietPlan);
 
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Daily Meal Plan</CardTitle>
-                <CardDescription>Your Indian-style diet plan for the day.</CardDescription>
+                <CardTitle>Weekly Meal Plan</CardTitle>
+                <CardDescription>Your 7-day Indian-style diet plan with cooking instructions.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                {parsedDiet.map((meal, index) => (
-                    <div key={index} className="bg-muted/50 p-4 rounded-lg">
-                        <h4 className="font-bold text-lg mb-1">{meal.meal}</h4>
-                        <p className="whitespace-pre-wrap font-mono text-sm">{meal.details}</p>
-                    </div>
-                ))}
+                 <Accordion type="single" collapsible className="w-full">
+                    {parsedDiet.map((diet, index) => (
+                        <AccordionItem value={`item-${index}`} key={index}>
+                        <AccordionTrigger>{diet.day}</AccordionTrigger>
+                        <AccordionContent>
+                            <div className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-muted p-4 rounded-md">
+                                {diet.details}
+                            </div>
+                        </AccordionContent>
+                        </AccordionItem>
+                    ))}
+                </Accordion>
             </CardContent>
         </Card>
     );
