@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -43,15 +42,15 @@ export default function WorkoutPlanTab({ workoutPlan }: WorkoutPlanTabProps) {
     <Card>
       <CardHeader>
         <CardTitle>Weekly Workout Schedule</CardTitle>
-        <CardDescription>Click on a day to see the details and start your workout.</CardDescription>
+        <CardDescription>Click on a day to see the details.</CardDescription>
       </CardHeader>
       <CardContent>
         <Accordion type="single" collapsible className="w-full">
           {parsedWorkout.map((workout, index) => (
             <AccordionItem value={`item-${index}`} key={index}>
-              <AccordionTrigger className="text-lg font-semibold">{workout.day}</AccordionTrigger>
+              <AccordionTrigger>{workout.day}</AccordionTrigger>
               <AccordionContent>
-                <div className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-muted/50 p-4 rounded-md mb-4">
+                <div className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-muted p-4 rounded-md mb-4">
                   {workout.details}
                 </div>
                 <Link href={`/app/workout/${index + 1}`} passHref>

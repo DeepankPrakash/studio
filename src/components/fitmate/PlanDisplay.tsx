@@ -1,10 +1,9 @@
-
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Download, RefreshCw, Sparkles, Apple, Dumbbell } from 'lucide-react';
+import { Download, RefreshCw } from 'lucide-react';
 import WorkoutPlanTab from "./WorkoutPlanTab";
 import DietPlanTab from "./DietPlanTab";
 import SupplementPlanTab from "./SupplementPlanTab";
@@ -47,41 +46,36 @@ export default function PlanDisplay({
          </div>
        </div>
 
-       <Card className="shadow-lg no-print">
-        <CardHeader className="text-center bg-muted/30 rounded-t-lg">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary">
-            <Dumbbell className="h-6 w-6 text-primary-foreground" />
-          </div>
-          <CardTitle className="mt-4">Your Personalized Plan</CardTitle>
+       <Card className="no-print">
+        <CardHeader className="text-center">
+          <CardTitle>Your Personalized Plan</CardTitle>
           <CardDescription>
             Here are your AI-generated workout, diet, and supplement plans.
           </CardDescription>
         </CardHeader>
-        <CardContent className="p-0">
+        <CardContent>
           <Tabs defaultValue="workout" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 rounded-none bg-muted/30">
-              <TabsTrigger value="workout" className="py-3 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary"><Dumbbell className="mr-2" />Workout</TabsTrigger>
-              <TabsTrigger value="diet" className="py-3 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary"><Apple className="mr-2" />Diet</TabsTrigger>
-              <TabsTrigger value="supplements" className="py-3 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary"><Sparkles className="mr-2" />Supplements</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="workout">Workout</TabsTrigger>
+              <TabsTrigger value="diet">Diet</TabsTrigger>
+              <TabsTrigger value="supplements">Supplements</TabsTrigger>
             </TabsList>
-            <div className="p-6">
-              <TabsContent value="workout">
-                <WorkoutPlanTab workoutPlan={workoutPlan} />
-              </TabsContent>
-              <TabsContent value="diet">
-                <DietPlanTab dietPlan={dietPlan} />
-              </TabsContent>
-              <TabsContent value="supplements">
-                 <SupplementPlanTab supplementPlan={supplementPlan} />
-              </TabsContent>
-            </div>
+            <TabsContent value="workout">
+              <WorkoutPlanTab workoutPlan={workoutPlan} />
+            </TabsContent>
+            <TabsContent value="diet">
+              <DietPlanTab dietPlan={dietPlan} />
+            </TabsContent>
+            <TabsContent value="supplements">
+               <SupplementPlanTab supplementPlan={supplementPlan} />
+            </TabsContent>
           </Tabs>
         </CardContent>
       </Card>
 
-      <div className="flex flex-col sm:flex-row gap-4 justify-center no-print pt-4">
-        <Button onClick={handlePrint} size="lg"><Download className="mr-2 h-4 w-4" /> Download Plan</Button>
-        <Button variant="outline" onClick={onStartOver} size="lg"><RefreshCw className="mr-2 h-4 w-4" /> Start Over</Button>
+      <div className="flex flex-col sm:flex-row gap-4 justify-center no-print">
+        <Button onClick={handlePrint}><Download className="mr-2 h-4 w-4" /> Download Plan</Button>
+        <Button variant="outline" onClick={onStartOver}><RefreshCw className="mr-2 h-4 w-4" /> Start Over</Button>
       </div>
     </div>
   );

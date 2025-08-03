@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -27,8 +26,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, ArrowRight, ArrowLeft } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent } from "@/components/ui/card";
 
 type FitmateFormProps = {
   onSubmit: (data: z.infer<typeof formSchema>) => void;
@@ -37,27 +35,19 @@ type FitmateFormProps = {
 
 const steps = [
   {
-    id: '01',
     title: "Personal Details",
-    description: "Let's get to know you.",
     fields: ["age", "weight", "height", "gender"],
   },
   {
-    id: '02',
     title: "Fitness Goals",
-    description: "What are you aiming for?",
     fields: ["goal", "activityLevel", "experienceLevel"],
   },
   {
-    id: '03',
     title: "Workout Preferences",
-    description: "How do you like to train?",
     fields: ["workoutDays", "workoutTime", "equipment"],
   },
   {
-    id: '04',
     title: "Health & Diet",
-    description: "Tell us about your background.",
     fields: ["foodPreferences", "injuries", "previousPlan"],
   },
 ];
@@ -104,41 +94,12 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
   };
 
   return (
-    <Card className="shadow-lg">
-      <div className="p-6">
-        <nav className="flex items-center justify-center mb-8" aria-label="Progress">
-            <p className="text-sm font-medium">Step {steps[currentStep].id} of {steps[steps.length - 1].id}</p>
-            <ol role="list" className="ml-8 flex items-center space-x-5">
-            {steps.map((step, index) => (
-                <li key={step.title}>
-                {currentStep > index ? (
-                    <div className="block h-2.5 w-2.5 rounded-full bg-primary hover:bg-primary/80">
-                    <span className="sr-only">{step.title}</span>
-                    </div>
-                ) : currentStep === index ? (
-                    <div className="relative flex items-center justify-center" aria-current="step">
-                    <span className="absolute flex h-5 w-5 p-px" aria-hidden="true">
-                        <span className="h-full w-full rounded-full bg-primary/20" />
-                    </span>
-                    <span className="relative block h-2.5 w-2.5 rounded-full bg-primary" aria-hidden="true" />
-                    <span className="sr-only">{step.title}</span>
-                    </div>
-                ) : (
-                    <div className="block h-2.5 w-2.5 rounded-full bg-muted hover:bg-muted/80">
-                    <span className="sr-only">{step.title}</span>
-                    </div>
-                )}
-                </li>
-            ))}
-            </ol>
-        </nav>
-        <h2 className="text-2xl font-semibold leading-none tracking-tight">{steps[currentStep].title}</h2>
-        <p className="text-sm text-muted-foreground mt-1.5">{steps[currentStep].description}</p>
-      </div>
-      <div className="p-6 pt-0">
+    <Card>
+      <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(processForm)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(processForm)} className="space-y-8">
             <div className={currentStep === 0 ? "block" : "hidden"}>
+              <h3 className="text-xl font-semibold mb-4">Personal Details</h3>
               <div className="grid md:grid-cols-2 gap-4">
                 <FormField control={form.control} name="age" render={({ field }) => (
                   <FormItem><FormLabel>Age</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value) || 0)} /></FormControl><FormMessage /></FormItem>
@@ -162,6 +123,7 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
             </div>
 
             <div className={currentStep === 1 ? "block" : "hidden"}>
+              <h3 className="text-xl font-semibold mb-4">Fitness Goals</h3>
               <div className="space-y-4">
                 <FormField control={form.control} name="goal" render={({ field }) => (
                   <FormItem><FormLabel>Primary Goal</FormLabel><FormControl>
@@ -196,6 +158,7 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
             </div>
 
             <div className={currentStep === 2 ? "block" : "hidden"}>
+              <h3 className="text-xl font-semibold mb-4">Workout Preferences</h3>
               <div className="space-y-4">
                 <FormField control={form.control} name="workoutDays" render={({ field }) => (
                   <FormItem><FormLabel>Workout Days per Week</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value) || 0)} /></FormControl><FormMessage /></FormItem>
@@ -210,6 +173,7 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
             </div>
 
             <div className={currentStep === 3 ? "block" : "hidden"}>
+              <h3 className="text-xl font-semibold mb-4">Health & Diet</h3>
               <div className="space-y-4">
                  <FormField control={form.control} name="foodPreferences" render={({ field }) => (
                   <FormItem><FormLabel>Food Preferences & Dislikes (Indian Style)</FormLabel><FormControl><Textarea {...field} /></FormControl><FormDescription>List your favorite and least favorite foods. Be specific!</FormDescription><FormMessage /></FormItem>
@@ -244,7 +208,7 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
                 </Button>
               )}
               {currentStep === steps.length - 1 && (
-                <Button type="submit" disabled={loading} size="lg">
+                <Button type="submit" disabled={loading}>
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Generate Plan
                 </Button>
@@ -252,7 +216,7 @@ export default function FitmateForm({ onSubmit, loading }: FitmateFormProps) {
             </div>
           </form>
         </Form>
-      </div>
+      </CardContent>
     </Card>
   );
 }
