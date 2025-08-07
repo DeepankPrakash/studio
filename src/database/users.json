@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "id": "1",
+    "name": "Deepank",
+    "email": "prakash.deepank@gmail.com",
+    "password": "$2b$10$C1/bYcTdtlDuFuOZskvCK.zETLYqHOVJZDCZq.n.9NDD81tX7LyEm",
+    "plans": null
+  }
+]

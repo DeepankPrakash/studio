@@ -1,19 +1,16 @@
+
 'use server';
 
 import fs from 'fs/promises';
 import path from 'path';
-import bcrypt from 'bcrypt';
-import { z } from 'zod';
-import { registerSchema } from '@/lib/schemas';
 
 const dbPath = path.join(process.cwd(), 'src', 'database', 'users.json');
-const saltRounds = 10;
 
 export type User = {
     id: string;
     name: string;
     email: string;
-    password: string;
+    password?: string; // Made password optional as it's not used post-login removal
     plans?: {
         workoutPlan: string;
         dietPlan: string;
@@ -26,7 +23,6 @@ async function readUsers(): Promise<User[]> {
     const data = await fs.readFile(dbPath, 'utf-8');
     return JSON.parse(data) as User[];
   } catch (error) {
-    // If the file doesn't exist, return an empty array
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
       return [];
     }
@@ -38,29 +34,11 @@ async function writeUsers(users: User[]): Promise<void> {
   await fs.writeFile(dbPath, JSON.stringify(users, null, 2));
 }
 
-export async function findUserByEmail(email: string): Promise<User | undefined> {
+export async function getFirstUser(): Promise<User | undefined> {
   const users = await readUsers();
-  return users.find(user => user.email === email);
+  return users[0];
 }
 
-export async function createUser(data: z.infer<typeof registerSchema>): Promise<User> {
-  const users = await readUsers();
-  const hashedPassword = await bcrypt.hash(data.password, saltRounds);
-  const newUser: User = {
-    id: String(users.length + 1),
-    name: data.name,
-    email: data.email,
-    password: hashedPassword,
-    plans: null,
-  };
-  users.push(newUser);
-  await writeUsers(users);
-  return newUser;
-}
-
-export async function verifyPassword(password: string, hash: string): Promise<boolean> {
-  return bcrypt.compare(password, hash);
-}
 
 export async function updateUserPlans(email: string, plans: User['plans']) {
     const users = await readUsers();

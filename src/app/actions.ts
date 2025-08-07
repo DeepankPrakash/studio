@@ -1,32 +1,31 @@
+
 "use server";
 
 import { z } from "zod";
 import { generateDietPlan } from "@/ai/flows/generate-diet-plan";
 import { generateWorkoutPlan } from "@/ai/flows/generate-workout-plan";
 import { generateSupplementPlan } from "@/ai/flows/generate-supplement-plan";
-import { formSchema, loginSchema, registerSchema } from "@/lib/schemas";
+import { formSchema } from "@/lib/schemas";
 import { talkToAi } from "@/ai/flows/talk-to-ai";
 import {
-  createUser,
-  findUserByEmail,
-  verifyPassword,
   updateUserPlans,
+  getFirstUser,
   User,
 } from "@/services/user";
-import { cookies } from 'next/headers';
 
-async function getAuthenticatedUser(): Promise<User | null> {
-    const cookieStore = cookies();
-    const userEmail = cookieStore.get('user_email')?.value;
-    if (!userEmail) return null;
-    return findUserByEmail(userEmail);
+// In a real app, you'd have a way to identify the logged-in user.
+// For this version, we'll just use the first user in our JSON "database".
+async function getCurrentUser(): Promise<User | null> {
+    return getFirstUser();
 }
 
 export async function generatePlansAction(data: z.infer<typeof formSchema>) {
   try {
-    const user = await getAuthenticatedUser();
+    const user = await getCurrentUser();
     if (!user) {
-        return { error: "You must be logged in to generate plans." };
+        // This can happen if the users.json file is empty.
+        // We'll proceed without saving for now.
+        console.warn("No user found in the database. Plans will not be saved.")
     }
 
     const validatedData = formSchema.parse(data);
@@ -75,7 +74,9 @@ export async function generatePlansAction(data: z.infer<typeof formSchema>) {
         supplementPlan: supplementPlan.supplementPlan,
     };
 
-    await updateUserPlans(user.email, plans);
+    if (user) {
+        await updateUserPlans(user.email, plans);
+    }
 
     return { ...plans };
   } catch (error) {
@@ -89,7 +90,7 @@ export async function generatePlansAction(data: z.infer<typeof formSchema>) {
 }
 
 export async function getPlansAction() {
-    const user = await getAuthenticatedUser();
+    const user = await getCurrentUser();
     if (!user) return null;
     return user.plans || null;
 }
@@ -102,61 +103,4 @@ export async function talkToAiAction(history: { role: 'user' | 'model'; text: st
         console.error("Error in talkToAiAction: ", error);
         return { error: "An unexpected error occurred while talking to the AI." };
     }
-}
-
-export async function loginAction(data: z.infer<typeof loginSchema>) {
-    try {
-        const validatedData = loginSchema.parse(data);
-        const user = await findUserByEmail(validatedData.email);
-
-        if (!user) {
-            return { error: "Invalid email or password." };
-        }
-
-        const isPasswordValid = await verifyPassword(validatedData.password, user.password);
-
-        if (!isPasswordValid) {
-            return { error: "Invalid email or password." };
-        }
-
-        const cookieStore = cookies();
-        cookieStore.set('user_email', user.email, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24 * 7, // One week
-            path: '/',
-        });
-
-        return { success: true };
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            return { error: "Validation failed: " + error.message };
-        }
-        console.error("Login error:", error);
-        return { error: "An unexpected error occurred during login." };
-    }
-}
-
-export async function registerAction(data: z.infer<typeof registerSchema>) {
-    try {
-        const validatedData = registerSchema.parse(data);
-        const existingUser = await findUserByEmail(validatedData.email);
-        if (existingUser) {
-            return { error: "A user with this email already exists." };
-        }
-        await createUser(validatedData);
-        return { success: true };
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            return { error: "Validation failed: " + error.message };
-        }
-        console.error("Registration error:", error);
-        return { error: "An unexpected error occurred during registration." };
-    }
-}
-
-export async function logoutAction() {
-    const cookieStore = cookies();
-    cookieStore.delete('user_email');
-    return { success: true };
 }
