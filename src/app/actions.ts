@@ -7,27 +7,16 @@ import { generateWorkoutPlan } from "@/ai/flows/generate-workout-plan";
 import { generateSupplementPlan } from "@/ai/flows/generate-supplement-plan";
 import { formSchema } from "@/lib/schemas";
 import { talkToAi } from "@/ai/flows/talk-to-ai";
-import {
-  updateUserPlans,
-  getFirstUser,
-  User,
-} from "@/services/user";
 
-// In a real app, you'd have a way to identify the logged-in user.
-// For this version, we'll just use the first user in our JSON "database".
-async function getCurrentUser(): Promise<User | null> {
-    return getFirstUser();
-}
+let lastGeneratedPlans: {
+  dietPlan: string;
+  workoutPlan: string;
+  supplementPlan: string;
+} | null = null;
+
 
 export async function generatePlansAction(data: z.infer<typeof formSchema>) {
   try {
-    const user = await getCurrentUser();
-    if (!user) {
-        // This can happen if the users.json file is empty.
-        // We'll proceed without saving for now.
-        console.warn("No user found in the database. Plans will not be saved.")
-    }
-
     const validatedData = formSchema.parse(data);
     const { age, weight, height, gender, activityLevel, goal } = validatedData;
 
@@ -74,9 +63,7 @@ export async function generatePlansAction(data: z.infer<typeof formSchema>) {
         supplementPlan: supplementPlan.supplementPlan,
     };
 
-    if (user) {
-        await updateUserPlans(user.email, plans);
-    }
+    lastGeneratedPlans = plans;
 
     return { ...plans };
   } catch (error) {
@@ -90,9 +77,7 @@ export async function generatePlansAction(data: z.infer<typeof formSchema>) {
 }
 
 export async function getPlansAction() {
-    const user = await getCurrentUser();
-    if (!user) return null;
-    return user.plans || null;
+    return lastGeneratedPlans;
 }
 
 export async function talkToAiAction(history: { role: 'user' | 'model'; text: string }[], newMessage: string) {
