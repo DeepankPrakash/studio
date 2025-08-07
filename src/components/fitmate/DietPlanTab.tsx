@@ -19,41 +19,49 @@ const parseDietPlan = (plan: string): DailyDiet[] => {
     if (!plan) return [];
 
     const dailyPlans: DailyDiet[] = [];
+    // Split the plan by "Day X:" to get blocks for each day.
+    // The lookahead `(?=^Day\s*\d+\s*:)` ensures the delimiter is kept.
     const dayBlocks = plan.split(/(?=^Day\s*\d+\s*:)/im).filter(s => s.trim());
 
     dayBlocks.forEach(block => {
         const lines = block.trim().split('\n');
-        const dayMatch = lines[0].match(/Day\s*\d+\s*:/i);
+        const dayMatch = lines[0]?.match(/Day\s*\d+\s*:/i);
         if (!dayMatch) return;
 
         const day = dayMatch[0].replace(':', '').trim();
         const meals: Meal[] = [];
-        let currentMeal: Partial<Meal> | null = null;
         
-        for (let i = 1; i < lines.length; i++) {
-            const line = lines[i].trim();
-            const isMealLine = line.includes('Breakfast:') || line.includes('Lunch:') || line.includes('Dinner:');
+        let currentMeal: Partial<Meal> | null = null;
 
-            if (isMealLine) {
-                if (currentMeal?.name && currentMeal?.macros && currentMeal?.instructions) {
+        for (const line of lines.slice(1)) {
+            const trimmedLine = line.trim();
+            if (!trimmedLine) continue;
+
+            // A new meal starts with Breakfast, Lunch, or Dinner
+            const isMealHeader = /^(breakfast|lunch|dinner):/i.test(trimmedLine);
+            
+            if (isMealHeader) {
+                // If there's a pending meal, save it before starting a new one.
+                if (currentMeal && currentMeal.name && currentMeal.macros && currentMeal.instructions) {
                     meals.push(currentMeal as Meal);
                 }
-                currentMeal = { name: line };
+                // Start a new meal
+                currentMeal = { name: trimmedLine, macros: "Not specified", instructions: "" };
             } else if (currentMeal) {
-                if (line.startsWith('Macros:')) {
-                    currentMeal.macros = line.substring('Macros:'.length).trim();
-                } else if (line.startsWith('Cooking Instructions:')) {
-                    currentMeal.instructions = line.substring('Cooking Instructions:'.length).trim();
-                } else if (currentMeal.instructions) {
-                    currentMeal.instructions += `\n${line}`;
-                } else if(currentMeal.name && !currentMeal.macros) {
-                    // Handle cases where instructions are not explicitly labeled
-                    currentMeal.macros = "Not specified";
-                    currentMeal.instructions = line;
+                // This line is part of the current meal (either macros or instructions)
+                if (trimmedLine.toLowerCase().startsWith('macros:')) {
+                    currentMeal.macros = trimmedLine.substring('macros:'.length).trim();
+                } else if (trimmedLine.toLowerCase().startsWith('cooking instructions:')) {
+                    // Start of instructions
+                    currentMeal.instructions = trimmedLine.substring('cooking instructions:'.length).trim();
+                } else if (currentMeal.instructions !== undefined) {
+                    // Append to existing instructions
+                    currentMeal.instructions += `\n${trimmedLine}`;
                 }
             }
         }
         
+        // Add the last processed meal to the list if it exists
         if (currentMeal?.name && currentMeal?.macros && currentMeal?.instructions) {
             meals.push(currentMeal as Meal);
         }
