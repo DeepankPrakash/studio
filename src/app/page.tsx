@@ -8,7 +8,7 @@ export default function HomePage() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace('/app/generate');
+    router.replace('/login');
   }, [router]);
 
   // Show a loading indicator while redirecting

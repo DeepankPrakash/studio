@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
  
 export function middleware(request: NextRequest) {
-  // If the user is on the root path, redirect them to the /app/generate page.
+  // If the user is on the root path, redirect them to the /login page.
   if (request.nextUrl.pathname === '/') {
-    return NextResponse.redirect(new URL('/app/generate', request.url))
+    return NextResponse.redirect(new URL('/login', request.url))
   }
  
   return NextResponse.next()
@@ -19,6 +19,6 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|login|register).*)',
   ],
 }
