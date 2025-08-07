@@ -2,9 +2,9 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Dumbbell, Home, MessageSquare, Menu } from 'lucide-react';
-
+import { usePathname, useRouter } from 'next/navigation';
+import { Dumbbell, Home, MessageSquare, Menu, LogOut, Loader2 } from 'lucide-react';
+import { logoutAction } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -18,6 +18,15 @@ export default function AppLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [loggingOut, setLoggingOut] = React.useState(false);
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    await logoutAction();
+    router.push('/login');
+    setLoggingOut(false);
+  };
 
   const navItems = (
     <>
@@ -59,6 +68,12 @@ export default function AppLayout({
           <nav className="flex-1 grid items-start px-2 text-sm font-medium lg:px-4">
              {navItems}
           </nav>
+          <div className="mt-auto p-4">
+             <Button variant="ghost" className="w-full justify-start" onClick={handleLogout} disabled={loggingOut}>
+              {loggingOut ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <LogOut className="mr-2 h-4 w-4" />}
+              Logout
+            </Button>
+          </div>
         </div>
       </div>
       <div className="flex flex-col">
@@ -81,6 +96,12 @@ export default function AppLayout({
                 </Link>
                 {navItems}
               </nav>
+               <div className="mt-auto">
+                <Button variant="ghost" className="w-full justify-start text-lg" onClick={handleLogout} disabled={loggingOut}>
+                    {loggingOut ? <Loader2 className="mr-2 h-5 w-5 animate-spin"/> : <LogOut className="mr-2 h-5 w-5" />}
+                    Logout
+                </Button>
+              </div>
             </SheetContent>
           </Sheet>
            <div className="w-full flex-1">

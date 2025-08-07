@@ -6,21 +6,39 @@ import { generateWorkoutPlan } from "@/ai/flows/generate-workout-plan";
 import { generateSupplementPlan } from "@/ai/flows/generate-supplement-plan";
 import { formSchema, loginSchema, registerSchema } from "@/lib/schemas";
 import { talkToAi } from "@/ai/flows/talk-to-ai";
+import {
+  createUser,
+  findUserByEmail,
+  verifyPassword,
+  updateUserPlans,
+  User,
+} from "@/services/user";
+import { cookies } from 'next/headers';
+
+async function getAuthenticatedUser(): Promise<User | null> {
+    const cookieStore = cookies();
+    const userEmail = cookieStore.get('user_email')?.value;
+    if (!userEmail) return null;
+    return findUserByEmail(userEmail);
+}
 
 export async function generatePlansAction(data: z.infer<typeof formSchema>) {
   try {
+    const user = await getAuthenticatedUser();
+    if (!user) {
+        return { error: "You must be logged in to generate plans." };
+    }
+
     const validatedData = formSchema.parse(data);
     const { age, weight, height, gender, activityLevel, goal } = validatedData;
 
-    // BMR Calculation (Mifflin-St Jeor)
     let bmr: number;
     if (gender === "male") {
       bmr = 10 * weight + 6.25 * height - 5 * age + 5;
-    } else { // female or other
+    } else {
       bmr = 10 * weight + 6.25 * height - 5 * age - 161;
     }
 
-    // TDEE Calculation
     const activityFactors = {
       sedentary: 1.2,
       "lightly active": 1.375,
@@ -30,7 +48,6 @@ export async function generatePlansAction(data: z.infer<typeof formSchema>) {
     };
     const tdee = bmr * activityFactors[activityLevel];
 
-    // Calorie Target based on Goal
     let targetCalories = tdee;
     if (goal === "cut") {
       targetCalories -= 500;
@@ -38,7 +55,6 @@ export async function generatePlansAction(data: z.infer<typeof formSchema>) {
       targetCalories += 300;
     }
 
-    // Macro Calculation
     const protein = Math.round(weight * 2);
     const fats = Math.round((targetCalories * 0.25) / 9);
     const carbs = Math.round(
@@ -47,53 +63,36 @@ export async function generatePlansAction(data: z.infer<typeof formSchema>) {
 
     const macroTargets = `Protein: ${protein}g, Carbs: ${carbs}g, Fats: ${fats}g. (Total calories: ~${Math.round(targetCalories)})`;
 
-    const dietPlanInput = {
-      age: validatedData.age,
-      weight: validatedData.weight,
-      goal: validatedData.goal,
-      foodPreferences: validatedData.foodPreferences,
-      macroTargets: macroTargets,
-    };
-
-    const workoutPlanInput = {
-      goal: validatedData.goal,
-      activityLevel: validatedData.activityLevel,
-      age: validatedData.age,
-      weight: validatedData.weight,
-      height: validatedData.height,
-      gender: validatedData.gender,
-      equipment: validatedData.equipment,
-      experienceLevel: validatedData.experienceLevel,
-      workoutDays: validatedData.workoutDays,
-      workoutTime: validatedData.workoutTime,
-      injuries: validatedData.injuries,
-      previousPlan: validatedData.previousPlan,
-    };
-
-    const supplementPlanInput = {
-        goal: validatedData.goal,
-        foodPreferences: validatedData.foodPreferences,
-        injuries: validatedData.injuries,
-        gender: validatedData.gender,
-        age: validatedData.age,
-    };
-
     const [dietPlan, workoutPlan, supplementPlan] = await Promise.all([
-      generateDietPlan(dietPlanInput),
-      generateWorkoutPlan(workoutPlanInput),
-      generateSupplementPlan(supplementPlanInput),
+      generateDietPlan({ ...validatedData, macroTargets }),
+      generateWorkoutPlan(validatedData),
+      generateSupplementPlan(validatedData),
     ]);
 
-    return { dietPlan, workoutPlan, supplementPlan };
+    const plans = {
+        dietPlan: dietPlan.dietPlan,
+        workoutPlan: workoutPlan.workoutPlan,
+        supplementPlan: supplementPlan.supplementPlan,
+    };
+
+    await updateUserPlans(user.email, plans);
+
+    return { ...plans };
   } catch (error) {
     if (error instanceof z.ZodError) {
       return { error: "Validation failed: " + error.message };
     }
     console.error("Error generating plans:", error);
-    return { error: "An unexpected error occurred while generating plans." };
+    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred.";
+    return { error: `An unexpected error occurred while generating plans: ${errorMessage}` };
   }
 }
 
+export async function getPlansAction() {
+    const user = await getAuthenticatedUser();
+    if (!user) return null;
+    return user.plans || null;
+}
 
 export async function talkToAiAction(history: { role: 'user' | 'model'; text: string }[], newMessage: string) {
     try {
@@ -105,18 +104,30 @@ export async function talkToAiAction(history: { role: 'user' | 'model'; text: st
     }
 }
 
-
-// Placeholder authentication actions
 export async function loginAction(data: z.infer<typeof loginSchema>) {
     try {
         const validatedData = loginSchema.parse(data);
-        console.log("Logging in with:", validatedData);
-        // In a real app, you would verify credentials against a database
-        if (validatedData.email && validatedData.password) {
-             return { success: true };
-        } else {
+        const user = await findUserByEmail(validatedData.email);
+
+        if (!user) {
             return { error: "Invalid email or password." };
         }
+
+        const isPasswordValid = await verifyPassword(validatedData.password, user.password);
+
+        if (!isPasswordValid) {
+            return { error: "Invalid email or password." };
+        }
+
+        const cookieStore = cookies();
+        cookieStore.set('user_email', user.email, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 60 * 60 * 24 * 7, // One week
+            path: '/',
+        });
+
+        return { success: true };
     } catch (error) {
         if (error instanceof z.ZodError) {
             return { error: "Validation failed: " + error.message };
@@ -129,8 +140,11 @@ export async function loginAction(data: z.infer<typeof loginSchema>) {
 export async function registerAction(data: z.infer<typeof registerSchema>) {
     try {
         const validatedData = registerSchema.parse(data);
-        console.log("Registering with:", validatedData);
-        // In a real app, you would create a new user in your database
+        const existingUser = await findUserByEmail(validatedData.email);
+        if (existingUser) {
+            return { error: "A user with this email already exists." };
+        }
+        await createUser(validatedData);
         return { success: true };
     } catch (error) {
         if (error instanceof z.ZodError) {
@@ -139,4 +153,10 @@ export async function registerAction(data: z.infer<typeof registerSchema>) {
         console.error("Registration error:", error);
         return { error: "An unexpected error occurred during registration." };
     }
+}
+
+export async function logoutAction() {
+    const cookieStore = cookies();
+    cookieStore.delete('user_email');
+    return { success: true };
 }

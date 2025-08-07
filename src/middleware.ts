@@ -2,8 +2,16 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
  
 export function middleware(request: NextRequest) {
-  // If the user is on the root path, redirect them to the /login page.
-  if (request.nextUrl.pathname === '/') {
+  const cookie = request.cookies.get('user_email')
+  const { pathname } = request.nextUrl
+
+  // If user is logged in, and tries to access login/register, redirect to app
+  if (cookie && (pathname.startsWith('/login') || pathname.startsWith('/register'))) {
+    return NextResponse.redirect(new URL('/app/generate', request.url))
+  }
+  
+  // If user is not logged in and tries to access app, redirect to login
+  if (!cookie && pathname.startsWith('/app')) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
  
@@ -19,6 +27,6 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|login|register).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 }

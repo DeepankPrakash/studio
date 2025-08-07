@@ -1,14 +1,15 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { z } from "zod";
 import { formSchema } from "@/lib/schemas";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { generatePlansAction } from "@/app/actions";
+import { generatePlansAction, getPlansAction } from "@/app/actions";
 import FitmateForm from "@/components/fitmate/FitmateForm";
 import PlanDisplay from "@/components/fitmate/PlanDisplay";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Plans = {
   workoutPlan: string;
@@ -19,7 +20,19 @@ type Plans = {
 export default function GeneratePage() {
   const { toast } = useToast();
   const [plans, setPlans] = useState<Plans | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Start loading to check for existing plans
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      setLoading(true);
+      const existingPlans = await getPlansAction();
+      if (existingPlans) {
+        setPlans(existingPlans);
+      }
+      setLoading(false);
+    };
+    fetchPlans();
+  }, []);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setLoading(true);
@@ -30,9 +43,9 @@ export default function GeneratePage() {
         throw new Error(result.error || "Failed to generate plans.");
       }
       setPlans({
-        workoutPlan: result.workoutPlan.workoutPlan,
-        dietPlan: result.dietPlan.dietPlan,
-        supplementPlan: result.supplementPlan.supplementPlan,
+        workoutPlan: result.workoutPlan,
+        dietPlan: result.dietPlan,
+        supplementPlan: result.supplementPlan,
       });
     } catch (error) {
       console.error(error);
@@ -62,7 +75,13 @@ export default function GeneratePage() {
         </CardHeader>
       </Card>
 
-      {!plans ? (
+      {loading ? (
+        <div className="space-y-4">
+          <Skeleton className="h-24 w-full" />
+          <Skeleton className="h-64 w-full" />
+          <Skeleton className="h-10 w-32" />
+        </div>
+      ) : !plans ? (
         <FitmateForm onSubmit={onSubmit} loading={loading} />
       ) : (
         <PlanDisplay
