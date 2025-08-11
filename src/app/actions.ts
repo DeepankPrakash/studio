@@ -51,14 +51,17 @@ export async function generatePlansAction(data: z.infer<typeof formSchema>) {
 
     const macroTargets = `Protein: ${protein}g, Carbs: ${carbs}g, Fats: ${fats}g. (Total calories: ~${Math.round(targetCalories)})`;
 
-    const [dietPlan, workoutPlan, supplementPlan] = await Promise.all([
+    const [dietPlanResponse, workoutPlan, supplementPlan] = await Promise.all([
       generateDietPlan({ ...validatedData, macroTargets }),
       generateWorkoutPlan(validatedData),
       generateSupplementPlan(validatedData),
     ]);
+    
+    // The diet plan is now an object, so we stringify it for storage.
+    const dietPlanString = JSON.stringify(dietPlanResponse.dietPlan, null, 2);
 
     const plans = {
-        dietPlan: dietPlan.dietPlan,
+        dietPlan: dietPlanString,
         workoutPlan: workoutPlan.workoutPlan,
         supplementPlan: supplementPlan.supplementPlan,
     };

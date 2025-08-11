@@ -27,8 +27,21 @@ const GenerateDietPlanInputSchema = z.object({
 });
 export type GenerateDietPlanInput = z.infer<typeof GenerateDietPlanInputSchema>;
 
+const MealSchema = z.object({
+  name: z.string().describe('The name of the meal.'),
+  macros: z.string().describe('The protein, carbs, and fats in grams.'),
+  instructions: z.string().describe('The cooking instructions for the meal.'),
+});
+
+const DayPlanSchema = z.object({
+  day: z.string().describe('The day of the week (e.g., "Day 1").'),
+  breakfast: MealSchema,
+  lunch: MealSchema,
+  dinner: MealSchema,
+});
+
 const GenerateDietPlanOutputSchema = z.object({
-  dietPlan: z.string().describe('The generated Indian-style diet plan for 7 days with macros and cooking instructions.'),
+  dietPlan: z.array(DayPlanSchema).describe('The generated 7-day Indian-style diet plan.'),
 });
 export type GenerateDietPlanOutput = z.infer<typeof GenerateDietPlanOutputSchema>;
 
@@ -42,7 +55,7 @@ const prompt = ai.definePrompt({
   name: 'generateDietPlanPrompt',
   input: {schema: GenerateDietPlanInputSchema},
   output: {schema: GenerateDietPlanOutputSchema},
-  prompt: `You are an expert nutritionist specializing in creating 7-day Indian-style diet plans.
+  prompt: `You are an expert nutritionist specializing in creating 7-day Indian-style diet plans in a structured JSON format.
 
 You will use the user's information to generate a personalized 7-day diet plan, taking into account their fitness goal, food preferences, and macro targets.
 
@@ -53,20 +66,15 @@ Goal: {{{goal}}}
 Food Preferences: {{{foodPreferences}}}
 Macro Targets: {{{macroTargets}}}
 
-Generate a detailed 7-day Indian-style diet plan.
-For each day, structure the response with clear headings for the day (e.g., "Day 1", "Day 2", etc.).
-Under each day, provide meals for Breakfast, Lunch, and Dinner.
-For each meal, you MUST follow this exact format:
-1. The meal name on its own line.
-2. A line starting with "Macros:" followed by the protein, carbs, and fats in grams.
-3. A line starting with "Cooking Instructions:" followed by the cooking steps.
+Generate a detailed 7-day Indian-style diet plan as a JSON object. The root object should have a single key "dietPlan" which is an array of 7 day-plan objects.
+Each day-plan object must have the following keys: "day", "breakfast", "lunch", "dinner".
+The value for "day" should be a string (e.g., "Day 1").
+The values for "breakfast", "lunch", and "dinner" must be meal objects.
+Each meal object must have the following keys: "name", "macros", and "instructions".
+- "macros" should be a string like "Protein: 20g, Carbs: 30g, Fats: 10g".
+- "instructions" should be a string containing the cooking steps.
 
-Here is an example for one meal:
-Breakfast: 2 Besan Chillas with mint chutney.
-Macros: Protein: 20g, Carbs: 30g, Fats: 10g
-Cooking Instructions: Mix 1 cup of besan (gram flour) with water, salt, turmeric, and finely chopped onions to make a batter. Pour onto a hot non-stick pan and cook on both sides until golden brown. Serve with mint chutney.
-
-Produce a response for all 7 days following this structure for every meal (Breakfast, Lunch, Dinner).
+Ensure your entire output is a single, valid JSON object that adheres to this schema.
 `,
 });
 
