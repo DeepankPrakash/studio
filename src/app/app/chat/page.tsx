@@ -69,31 +69,31 @@ export default function ChatPage() {
 
     return (
         <div className="h-[calc(100vh-4rem)] flex flex-col max-w-4xl mx-auto w-full">
-            <Card className="flex-1 flex flex-col">
+            <Card className="flex-1 flex flex-col glass-card-dark border-white/20">
                 <CardHeader className="text-center">
-                    <CardTitle>Chat with FITMATE</CardTitle>
-                    <CardDescription>Ask me anything about your fitness plan, nutrition, or general health.</CardDescription>
+                    <CardTitle className="gradient-text">Chat with FITMATE</CardTitle>
+                    <CardDescription className="text-white/80">Ask me anything about your fitness plan, nutrition, or general health.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col gap-4">
                     <ScrollArea className="flex-1 pr-4" ref={scrollAreaRef}>
                         <div className="space-y-4">
                             {messages.length === 0 && (
-                                <div className="text-center text-muted-foreground">
+                                <div className="text-center text-white/70">
                                     <p>Start the conversation!</p>
                                 </div>
                             )}
                             {messages.map((message, index) => (
                                 <div key={index} className={`flex items-start gap-3 ${message.role === 'user' ? 'justify-end' : ''}`}>
                                     {message.role === 'model' && (
-                                        <div className="p-2 bg-primary rounded-full text-primary-foreground">
+                                        <div className="p-2 bg-blue-600 rounded-full text-white">
                                             <Sparkles className="w-5 h-5" />
                                         </div>
                                     )}
-                                    <div className={`rounded-lg px-4 py-2 max-w-[80%] ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
+                                    <div className={`rounded-lg px-4 py-2 max-w-[80%] ${message.role === 'user' ? 'bg-blue-600 text-white' : 'bg-white/10 text-white backdrop-blur-sm'}`}>
                                         <p className="text-sm whitespace-pre-wrap">{message.text}</p>
                                     </div>
                                     {message.role === 'user' && (
-                                         <div className="p-2 bg-muted rounded-full text-foreground">
+                                         <div className="p-2 bg-white/20 rounded-full text-white">
                                             <User className="w-5 h-5" />
                                         </div>
                                     )}
@@ -118,8 +118,9 @@ export default function ChatPage() {
                             onKeyDown={(e) => e.key === 'Enter' && !loading && handleSendMessage()}
                             placeholder="Type your message..."
                             disabled={loading}
+                            className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                         />
-                        <Button onClick={handleSendMessage} disabled={loading || !input.trim()}>
+                        <Button onClick={handleSendMessage} disabled={loading || !input.trim()} className="bg-blue-600 hover:bg-blue-700">
                             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                             <span className="sr-only">Send</span>
                         </Button>

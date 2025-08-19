@@ -21,47 +21,62 @@ type WorkoutDay = {
 const parseWorkoutPlan = (plan: string): WorkoutDay[] => {
     if (!plan) return [];
     
-    const dayRegex = /Day\s*(\d+)\s*:\s*(.*)/i;
-    const parts = plan.split(dayRegex).filter(s => s.trim() !== '');
-
-    if (parts.length < 3) {
-        // Fallback for non-standard format
+    // Split by day patterns
+    const dayPattern = /Day\s*(\d+)\s*:\s*([^\n]+)/gi;
+    const dayMatches = [...plan.matchAll(dayPattern)];
+    
+    if (dayMatches.length === 0) {
+        // Fallback: treat entire content as one workout
         const lines = plan.split('\n').filter(line => line.trim() !== '');
-        const dayMatch = lines[0]?.match(dayRegex);
-        if (dayMatch) {
-            return [{
-                day: `Day ${dayMatch[1]}`,
-                focus: dayMatch[2] || "Workout",
-                exercises: lines.slice(1).map(line => {
-                    const exerciseParts = line.replace(/^\d+\.\s*/, '').split(':');
-                    return {
-                        name: exerciseParts[0]?.trim() || 'Unknown Exercise',
-                        sets: exerciseParts[1]?.trim() || 'N/A'
-                    };
-                }),
-                dayNumber: parseInt(dayMatch[1] || '1', 10)
-            }];
-        }
-        return [{ day: "Full Workout", focus: "", exercises: [{ name: plan, sets: '' }], dayNumber: 1 }];
+        const exercises = lines
+            .filter(line => /^\d+\./.test(line.trim())) // Lines starting with numbers
+            .map(line => {
+                const cleanLine = line.replace(/^\d+\.\s*/, '').trim();
+                const parts = cleanLine.split(':');
+                return {
+                    name: parts[0]?.trim() || cleanLine,
+                    sets: parts[1]?.trim() || 'As prescribed'
+                };
+            });
+        
+        return [{
+            day: "Workout",
+            focus: "Complete Plan",
+            exercises: exercises.length > 0 ? exercises : [{ name: plan.trim(), sets: '' }],
+            dayNumber: 1
+        }];
     }
 
     const workouts: WorkoutDay[] = [];
-    for (let i = 0; i < parts.length; i += 3) {
-        const dayNumberStr = parts[i]?.trim();
-        const focus = parts[i + 1]?.trim();
-        const details = parts[i + 2]?.trim();
+    
+    dayMatches.forEach((match, index) => {
+        const dayNumber = parseInt(match[1], 10);
+        const focus = match[2].trim();
         
-        if (dayNumberStr && focus && details) {
-            const dayNumber = parseInt(dayNumberStr, 10);
-            const exerciseLines = details.split('\n').filter(line => line.trim() !== '');
-            const exercises = exerciseLines.map(line => {
-                const exerciseParts = line.replace(/^\d+\.\s*/, '').split(':');
-                return {
-                    name: exerciseParts[0]?.trim() || 'Unknown Exercise',
-                    sets: exerciseParts[1]?.trim() || 'N/A'
-                };
-            });
+        // Find the start and end of this day's content
+        const startIndex = match.index! + match[0].length;
+        const nextDayIndex = index < dayMatches.length - 1 
+            ? dayMatches[index + 1].index!
+            : plan.length;
+        
+        const dayContent = plan.substring(startIndex, nextDayIndex).trim();
+        
+        // Extract exercises (lines that start with numbers)
+        const exerciseLines = dayContent
+            .split('\n')
+            .map(line => line.trim())
+            .filter(line => line && /^\d+\./.test(line));
+        
+        const exercises = exerciseLines.map(line => {
+            const cleanLine = line.replace(/^\d+\.\s*/, '').trim();
+            const parts = cleanLine.split(':');
+            return {
+                name: parts[0]?.trim() || 'Unknown Exercise',
+                sets: parts[1]?.trim() || 'As prescribed'
+            };
+        });
 
+        if (exercises.length > 0) {
             workouts.push({
                 day: `Day ${dayNumber}`,
                 focus,
@@ -69,7 +84,8 @@ const parseWorkoutPlan = (plan: string): WorkoutDay[] => {
                 dayNumber,
             });
         }
-    }
+    });
+
     return workouts;
 };
 
@@ -79,33 +95,61 @@ type WorkoutPlanTabProps = {
 
 export default function WorkoutPlanTab({ workoutPlan }: WorkoutPlanTabProps) {
   const parsedWorkout = parseWorkoutPlan(workoutPlan);
+  
+  // Debug: Log the original plan and parsed result
+  console.log('Original workout plan:', workoutPlan);
+  console.log('Parsed workout:', parsedWorkout);
+
+  if (!workoutPlan || workoutPlan.trim() === '') {
+    return (
+      <div className="text-center py-8">
+        <p className="text-white/70">No workout plan available. Please generate a new plan.</p>
+      </div>
+    );
+  }
+
+  if (parsedWorkout.length === 0) {
+    return (
+      <div className="space-y-4">
+        <div className="text-center mb-6">
+          <h3 className="text-2xl font-bold text-white">Your Workout Plan</h3>
+          <p className="text-white/70">Raw workout plan content:</p>
+        </div>
+        <Card className="glass-card-dark border-white/20">
+          <CardContent className="pt-6">
+            <pre className="whitespace-pre-wrap text-sm text-white/90">{workoutPlan}</pre>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
        <div className="text-center mb-6">
-            <h3 className="text-2xl font-bold">Your Weekly Workout Schedule</h3>
-            <p className="text-muted-foreground">Here is your plan, broken down by day.</p>
+            <h3 className="text-2xl font-bold text-white">Your Weekly Workout Schedule</h3>
+            <p className="text-white/70">Here is your plan, broken down by day.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {parsedWorkout.map((workout, index) => (
-            <Card key={index} className="flex flex-col">
+            <Card key={index} className="flex flex-col glass-card-dark border-white/20">
               <CardHeader>
-                <CardTitle className="flex items-center justify-between">
+                <CardTitle className="flex items-center justify-between text-white">
                     <span>{workout.day}: {workout.focus}</span>
-                    <Dumbbell className="h-6 w-6 text-primary" />
+                    <Dumbbell className="h-6 w-6 text-blue-400" />
                 </CardTitle>
               </CardHeader>
               <CardContent className="flex-1 flex flex-col justify-between space-y-4">
                 <ul className="space-y-2">
                     {workout.exercises.map((exercise, exIndex) => (
-                        <li key={exIndex} className="text-sm">
-                            <span className="font-semibold">{exercise.name}:</span>
-                            <span className="text-muted-foreground ml-1">{exercise.sets}</span>
+                        <li key={exIndex} className="text-sm text-white/90">
+                            <span className="font-semibold text-white">{exercise.name}:</span>
+                            <span className="text-white/70 ml-1">{exercise.sets}</span>
                         </li>
                     ))}
                 </ul>
                 <Link href={`/app/workout/${workout.dayNumber}`} passHref>
-                  <Button className="w-full mt-4">
+                  <Button className="w-full mt-4 bg-blue-600 hover:bg-blue-700">
                     <PlayCircle className="mr-2 h-4 w-4" /> Start Workout
                   </Button>
                 </Link>

@@ -47,9 +47,9 @@ const prompt = ai.definePrompt({
   name: 'generateWorkoutPlanPrompt',
   input: {schema: GenerateWorkoutPlanInputSchema},
   output: {schema: GenerateWorkoutPlanOutputSchema},
-  prompt: `You are a personal trainer that creates workout plans.
+  prompt: `You are a professional personal trainer and fitness expert that creates detailed workout plans.
 
-Create a workout plan based on the following information:
+Create a comprehensive workout plan based on the following information:
 
 Fitness Goal: {{{goal}}}
 Activity Level: {{{activityLevel}}}
@@ -64,14 +64,32 @@ Workout Time: {{{workoutTime}}} minutes
 Injuries: {{{injuries}}}
 Previous Plan: {{{previousPlan}}}
 
+IMPORTANT INSTRUCTIONS:
+1. You MUST provide a complete workout plan with specific exercises, sets, and reps for each day
+2. Do NOT just provide workout types like "Push Pull Legs" - provide the actual exercises
+3. Structure the response by breaking it down into days. Each day should start with "Day X: [Focus of the day]"
+4. Under each day, list specific exercises with sets and reps format: "1. Exercise Name: 3 sets of 8-12 reps"
+5. Include 4-6 exercises per day minimum
+6. Consider the user's experience level, available equipment, and time constraints
+7. If the user has injuries, suggest alternative exercises or modifications
+8. Make sure the plan is progressive and suitable for their goal (cut/bulk/maintain)
 
-Make sure that the plan is tailored to the user's goal, experience level, available equipment, and any mentioned injuries.
-Structure the response by breaking it down into days. Each day should start with "Day X: [Focus of the day]".
-For example: "Day 1: Chest and Triceps".
-Under each day, list the exercises with sets and reps. For example: "1. Bench Press: 3 sets of 8-12 reps".
-If the user has injuries, suggest alternative exercises or modifications. If they were on a previous plan, consider it for progression.
+EXAMPLE FORMAT:
+Day 1: Chest and Triceps
+1. Bench Press: 3 sets of 8-12 reps
+2. Incline Dumbbell Press: 3 sets of 10-12 reps
+3. Dips: 3 sets of 8-15 reps
+4. Tricep Extensions: 3 sets of 12-15 reps
+5. Push-ups: 2 sets to failure
 
-Limit your response to a single workout plan.
+Day 2: Back and Biceps
+1. Pull-ups/Lat Pulldowns: 3 sets of 8-12 reps
+2. Barbell Rows: 3 sets of 8-12 reps
+3. Dumbbell Curls: 3 sets of 12-15 reps
+4. Hammer Curls: 3 sets of 12-15 reps
+5. Face Pulls: 2 sets of 15-20 reps
+
+Continue this format for all workout days.
 
 Workout Plan:`,
 });

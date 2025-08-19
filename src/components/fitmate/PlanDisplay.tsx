@@ -47,19 +47,19 @@ export default function PlanDisplay({
          </div>
        </div>
 
-       <Card className="no-print">
+       <Card className="no-print glass-card-dark border-white/20">
         <CardHeader className="text-center">
-          <CardTitle>Your Personalized Plan</CardTitle>
-          <CardDescription>
+          <CardTitle className="gradient-text">Your Personalized Plan</CardTitle>
+          <CardDescription className="text-white/80">
             Here are your AI-generated workout, diet, and supplement plans.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="workout" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="workout">Workout</TabsTrigger>
-              <TabsTrigger value="diet">Diet</TabsTrigger>
-              <TabsTrigger value="supplements">Supplements</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-3 bg-white/10">
+              <TabsTrigger value="workout" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">Workout</TabsTrigger>
+              <TabsTrigger value="diet" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">Diet</TabsTrigger>
+              <TabsTrigger value="supplements" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">Supplements</TabsTrigger>
             </TabsList>
             <TabsContent value="workout">
               <WorkoutPlanTab workoutPlan={workoutPlan} />
