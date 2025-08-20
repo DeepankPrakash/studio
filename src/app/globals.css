@@ -1,3 +1,5 @@
+/* stylelint-disable at-rule-no-unknown */
+/* CSS Tailwind directives - these are valid Tailwind CSS at-rules */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -67,32 +69,23 @@
 }
  
 @layer base {
+  /* stylelint-disable at-rule-no-unknown */
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
   }
+  /* stylelint-enable at-rule-no-unknown */
 }
 
 /* Custom background styles for different pages */
 .login-background {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), 
+              url('https://user-gen-media-assets.s3.amazonaws.com/gpt4o_images/1abf41cd-9d29-46fc-9da2-356d9d7b706c.png') center/cover;
   background-attachment: fixed;
   min-height: 100vh;
   position: relative;
-}
-
-.login-background::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070&auto=format&fit=crop') center/cover;
-  opacity: 0.15;
-  z-index: -1;
 }
 
 .main-background {
@@ -115,7 +108,7 @@
 }
 
 .app-background {
-  background: linear-gradient(135deg, #2d3748 0%, #4a5568 50%, #2d3748 100%);
+  background: linear-gradient(135deg, rgba(45, 55, 72, 0.3) 0%, rgba(74, 85, 104, 0.2) 50%, rgba(45, 55, 72, 0.3) 100%);
   background-attachment: fixed;
   min-height: 100vh;
   position: relative;
@@ -128,8 +121,97 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2070&auto=format&fit=crop') center/cover;
-  opacity: 0.08;
+  background: url('https://user-gen-media-assets.s3.amazonaws.com/gpt4o_images/ec8c801e-fe85-46dc-bd2d-cdfbde9a70ac.png') center/cover;
+  opacity: 0.35;
+  z-index: -1;
+}
+
+/* Section-specific backgrounds */
+.workout-section {
+  background: linear-gradient(rgba(255, 87, 51, 0.4), rgba(255, 154, 0, 0.4));
+  background-attachment: local;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.workout-section * {
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.workout-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('https://user-gen-media-assets.s3.amazonaws.com/gpt4o_images/ef86a586-4a30-4498-ae12-9cd3f179e6c3.png') center/cover;
+  opacity: 0.2;
+  z-index: -1;
+}
+
+.diet-section {
+  background: linear-gradient(rgba(76, 175, 80, 0.4), rgba(139, 195, 74, 0.4));
+  background-attachment: local;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.diet-section * {
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.diet-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('https://user-gen-media-assets.s3.amazonaws.com/gpt4o_images/3b5fe387-3195-4e36-86c7-4474c455b86f.png') center/cover;
+  opacity: 0.2;
+  z-index: -1;
+}
+
+.supplement-section {
+  background: linear-gradient(rgba(103, 58, 183, 0.4), rgba(63, 81, 181, 0.4));
+  background-attachment: local;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.supplement-section * {
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Enhanced cards within sections for better readability */
+.workout-section .glass-card-dark,
+.diet-section .glass-card-dark,
+.supplement-section .glass-card-dark {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.workout-section .bg-white\/10,
+.diet-section .bg-white\/10,
+.supplement-section .bg-white\/10 {
+  background: rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(10px);
+}
+
+.supplement-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('https://user-gen-media-assets.s3.amazonaws.com/gpt4o_images/ec8c801e-fe85-46dc-bd2d-cdfbde9a70ac.png') center/cover;
+  opacity: 0.2;
   z-index: -1;
 }
 

@@ -110,7 +110,7 @@ export default function WorkoutPlanTab({ workoutPlan }: WorkoutPlanTabProps) {
 
   if (parsedWorkout.length === 0) {
     return (
-      <div className="space-y-4">
+      <div className="workout-section space-y-4 p-6">
         <div className="text-center mb-6">
           <h3 className="text-2xl font-bold text-white">Your Workout Plan</h3>
           <p className="text-white/70">Raw workout plan content:</p>
@@ -125,7 +125,7 @@ export default function WorkoutPlanTab({ workoutPlan }: WorkoutPlanTabProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="workout-section space-y-6 p-6">
        <div className="text-center mb-6">
             <h3 className="text-2xl font-bold text-white">Your Weekly Workout Schedule</h3>
             <p className="text-white/70">Here is your plan, broken down by day.</p>
