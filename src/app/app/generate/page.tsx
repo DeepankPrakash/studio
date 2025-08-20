@@ -6,7 +6,6 @@ import type { z } from "zod";
 import { formSchema } from "@/lib/schemas";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { useUserHistory } from "@/hooks/useUserHistory";
 import { generatePlansAction, getPlansAction } from "@/app/actions";
 import FitmateForm from "@/components/fitmate/FitmateForm";
 import PlanDisplay from "@/components/fitmate/PlanDisplay";
@@ -20,7 +19,6 @@ type Plans = {
 
 export default function GeneratePage() {
   const { toast } = useToast();
-  const { addHistoryEntry } = useUserHistory();
   const [plans, setPlans] = useState<Plans | null>(null);
   const [loading, setLoading] = useState(true); // Start loading to check for existing plans
 
@@ -30,13 +28,11 @@ export default function GeneratePage() {
       const existingPlans = await getPlansAction();
       if (existingPlans) {
         setPlans(existingPlans);
-        // Track plan viewing
-        addHistoryEntry('plan_viewed', { planType: 'workout' });
       }
       setLoading(false);
     };
     fetchPlans();
-  }, [addHistoryEntry]);
+  }, []);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setLoading(true);
@@ -51,22 +47,6 @@ export default function GeneratePage() {
         dietPlan: result.dietPlan,
         supplementPlan: result.supplementPlan,
       });
-
-      // Track successful plan generation
-      addHistoryEntry('workout_generated', { 
-        goals: data.goal as any,
-        activityLevel: data.activityLevel.replace(' ', '_') as any,
-        experienceLevel: data.experienceLevel as any,
-        details: { workoutDays: data.workoutDays }
-      });
-      addHistoryEntry('diet_generated', { 
-        goals: data.goal as any,
-        dietPreference: 'standard' as any 
-      });
-      addHistoryEntry('supplement_generated', { 
-        goals: data.goal as any 
-      });
-
     } catch (error) {
       console.error(error);
       toast({

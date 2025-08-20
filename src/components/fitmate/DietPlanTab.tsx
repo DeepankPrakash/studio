@@ -50,7 +50,7 @@ export default function DietPlanTab({ dietPlan }: DietPlanTabProps) {
 
     if (parsedPlan.length === 0) {
         return (
-            <div className="p-4 glass-card-dark border-white/20 rounded-lg">
+            <div className="diet-section p-6 glass-card-dark border-white/20 rounded-lg">
                 <h3 className="text-xl font-bold mb-4 text-white">Your Diet Plan</h3>
                 <div className="prose max-w-none whitespace-pre-wrap font-mono text-sm bg-black/20 p-4 rounded-md text-white/90">
                     {dietPlan || "No diet plan generated. Please try again."}
@@ -60,7 +60,7 @@ export default function DietPlanTab({ dietPlan }: DietPlanTabProps) {
     }
     
     return (
-        <div>
+        <div className="diet-section p-6">
             <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold text-white">Your 7-Day Diet Plan</h3>
                 <p className="text-white/70">A weekly plan tailored to your goals.</p>
